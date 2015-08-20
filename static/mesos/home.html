@@ -1,0 +1,220 @@
+<ol class="breadcrumb">
+  <li class="active">
+    <span class="badge badge-type">Master</span>
+    {{state.id}}
+  </li>
+</ol>
+
+<div class="row">
+  <div class="col-md-3">
+    <div class="well">
+      <dl class="inline inline-toggle clearfix">
+        <dt>Cluster:</dt>
+        <dd>
+          <span ng-show="clusterNamed">{{state.cluster}}</span>
+          <span ng-show="!clusterNamed">
+            (Unnamed)
+            <i class="icon-info-sign"
+              tooltip="To name this cluster, set the --cluster flag when starting the master."
+              tooltip-placement="right"></i>
+          </span>
+        </dd>
+        <dt>Server:</dt>
+        <dd>{{state.pid.split("@")[1]}}</dd>
+        <dt>Version:</dt>
+        <dd>{{state.version}}</dd>
+        <dt>Built:</dt>
+        <dd>
+          <m-timestamp value="{{state.build_time * 1000}}">
+            by <i>{{state.build_user}}</i>
+          </m-timestamp>
+        </dd>
+        <dt>Started:</dt>
+        <dd>
+          <m-timestamp value="{{state.start_time * 1000}}"></m-timestamp>
+        </dd>
+        <dt>Elected:</dt>
+        <dd>
+          <m-timestamp value="{{state.elected_time * 1000}}"></m-timestamp>
+        </dd>
+      </dl>
+
+      <p><a href="" ng-click="log($event)">LOG</a></p>
+
+      <h4>Slaves</h4>
+      <table class="table table-condensed">
+        <tbody>
+          <tr>
+            <td>Activated</td>
+            <td class="text-right">{{activated_slaves | number}}</td>
+          </tr>
+          <tr>
+            <td>Deactivated</td>
+            <td class="text-right">{{deactivated_slaves | number}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>Tasks</h4>
+      <table class="table table-condensed">
+
+        <tbody>
+          <tr>
+            <td>Staged</td>
+            <td class="text-right">{{staged_tasks | number}}</td>
+          </tr>
+          <tr>
+            <td>Started</td>
+            <td class="text-right">{{started_tasks | number}}</td>
+          </tr>
+          <tr>
+            <td>Finished</td>
+            <td class="text-right">{{finished_tasks | number}}</td>
+          </tr>
+          <tr>
+            <td>Killed</td>
+            <td class="text-right">{{killed_tasks | number}}</td>
+          </tr>
+          <tr>
+            <td>Failed</td>
+            <td class="text-right">{{failed_tasks | number}}</td>
+          </tr>
+          <tr>
+            <td>Lost</td>
+            <td class="text-right">{{lost_tasks | number}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>Resources</h4>
+      <table class="table table-condensed">
+        <thead>
+          <tr>
+            <td></td>
+            <td class="text-right">CPUs</td>
+            <td class="text-right">Mem</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Total</td>
+            <td class="text-right">{{total_cpus | number}}</td>
+            <td class="text-right">{{total_mem * (1024 * 1024) | dataSize}}</td>
+          </tr>
+          <tr>
+            <td>Used</td>
+            <td class="text-right">{{used_cpus | number}}</td>
+            <td class="text-right">{{used_mem * (1024 * 1024) | dataSize}}</td>
+          </tr>
+          <tr>
+            <td>Offered</td>
+            <td class="text-right">{{offered_cpus | number}}</td>
+            <td class="text-right">{{offered_mem * (1024 * 1024) | dataSize}}</td>
+          </tr>
+          <tr>
+            <td>Idle</td>
+            <td class="text-right">{{idle_cpus | number}}</td>
+            <td class="text-right">{{idle_mem * (1024 * 1024) | dataSize}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="col-md-9">
+    <table m-table table-content="active_tasks" title="Active Tasks"
+      class="table table-striped table-bordered table-condensed">
+      <thead>
+        <tr>
+          <th data-key="id">ID</th>
+          <th data-key="name">Name</th>
+          <th data-key="state">State</th>
+          <th data-key="start_time" data-sort>Started</th>
+          <th data-key="host">Host</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-ng-if="active_tasks.length === 0">
+          <td colspan="6">No active tasks.</td>
+        </tr>
+        <tr ng-repeat="task in $data">
+          <td>
+            <a href="#/slaves/{{task.slave_id}}/frameworks/{{task.framework_id}}/executors/{{task.executor_id}}">
+              {{task.id}}
+            </a>
+          </td>
+          <td>{{task.name}}</td>
+          <td>{{task.state | truncateMesosState}}</td>
+          <td>
+            <m-timestamp value="{{task.start_time}}"></m-timestamp>
+          </td>
+          <td>
+            <span data-ng-show="slaves[task.slave_id]">
+              {{slaves[task.slave_id].hostname}}
+            </span>
+            <span class="text-muted" data-ng-show="!slaves[task.slave_id]">
+              Slave offline
+            </span>
+          </td>
+          <td>
+            <a data-ng-show="slaves[task.slave_id]" href="#/slaves/{{task.slave_id}}/frameworks/{{task.framework_id}}/executors/{{task.executor_id}}/browse">
+              Sandbox
+            </a>
+            <span class="text-muted" data-ng-show="!slaves[task.slave_id]">
+              Slave offline
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table m-table table-content="completed_tasks" title="Completed Tasks"
+      class="table table-striped table-bordered table-condensed">
+      <thead>
+        <tr>
+          <th data-key="id">ID</th>
+          <th data-key="name">Name</th>
+          <th data-key="state">State</th>
+          <th data-key="start_time" data-sort>Started</th>
+          <th data-key="finish_time">Stopped</th>
+          <th data-key="host">Host</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-ng-if="completed_tasks.length === 0">
+          <td colspan="7">No completed tasks.</td>
+        </tr>
+        <tr ng-repeat="task in $data">
+          <td>{{task.id}}</td>
+          <td>{{task.name}}</td>
+          <td>{{task.state | truncateMesosState}}</td>
+          <td>
+            <m-timestamp value="{{task.start_time}}"></m-timestamp>
+          </td>
+          <td>
+            <m-timestamp value="{{task.finish_time}}"></m-timestamp>
+          </td>
+          <td>
+            <a data-ng-show="_.has(slaves, task.slave_id)"
+                href="#/slaves/{{task.slave_id}}/frameworks/{{task.framework_id}}/executors/{{task.executor_id}}">
+              {{slaves[task.slave_id].hostname}}
+            </a>
+            <span class="text-muted" data-ng-show="!_.has(slaves, task.slave_id)">
+              Slave offline
+            </span>
+          </td>
+          <td>
+            <a data-ng-show="slaves[task.slave_id]" href="#/slaves/{{task.slave_id}}/frameworks/{{task.framework_id}}/executors/{{task.executor_id}}/browse">
+              Sandbox
+            </a>
+            <span class="text-muted" data-ng-show="!slaves[task.slave_id]">
+              Slave offline
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
