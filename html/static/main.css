@@ -1,0 +1,24 @@
+@font-face {
+  font-family: "Dosis";
+  src: url("../fonts/Dosis-SemiBold.otf");
+}
+@font-face {
+  font-family: "Lato";
+  src: url("../fonts/Lato-Regular.ttf");
+}
+@media (min-width: 768px) {
+  .container {
+    max-width: 730px;
+  }
+}
+.mantl-apps {
+  padding: 40px 15px;
+  text-align: center;
+}
+.mantl-apps .app-list {
+  font-size: 30px;
+  font-family: Dosis;
+}
+.mantl-apps .app-list .glyphicon {
+  float: right;
+}
