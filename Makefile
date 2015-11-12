@@ -1,7 +1,7 @@
 DOCKER  = docker
 REPO    = ciscocloud
 NAME    = nginx-mantlui
-VERSION = 0.2
+VERSION = 0.3
 
 all: build tag push
 
