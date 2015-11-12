@@ -1,0 +1,23 @@
+CACHE MANIFEST
+# ac4bdead50aff9cb0038e0b29ea4bd7b963e7763
+
+NETWORK:
+*
+
+FALLBACK:
+
+
+CACHE:
+./images/bg@2x.jpg
+./images/favicon.ico
+./images/logos/consul.png
+./images/logos/consul@2x.png
+./images/logos/mesos.png
+./images/logos/mesos@2x.png
+./index.html
+./scripts/lib.js
+./scripts/lib.js.gz
+./scripts/main.js
+./scripts/main.js.gz
+./styles/app.css
+./styles/app.css.gz
