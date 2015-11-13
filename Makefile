@@ -3,7 +3,7 @@
 DOCKER  = docker
 REPO    = ciscocloud
 NAME    = nginx-mantlui
-VERSION = 0.3
+VERSION = 0.4
 
 build:
 	$(DOCKER) build -t $(NAME) .
