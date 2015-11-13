@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# 81d2b468def75d122137019690ce77c6f061ef35
+# 9736322ee9274cc7d2b42da2504042a542d8584e
 
 NETWORK:
 *
@@ -8,10 +8,15 @@ FALLBACK:
 
 
 CACHE:
+./images/bg.jpg
 ./images/bg@2x.jpg
 ./images/favicon.ico
+./images/logos/chronos.png
+./images/logos/chronos@2x.png
 ./images/logos/consul.png
 ./images/logos/consul@2x.png
+./images/logos/marathon.png
+./images/logos/marathon@2x.png
 ./images/logos/mesos.png
 ./images/logos/mesos@2x.png
 ./index.html

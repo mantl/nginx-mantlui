@@ -2849,6 +2849,504 @@ Elm.Graphics.Element.make = function (_elm) {
                                   ,Position: Position};
    return _elm.Graphics.Element.values;
 };
+Elm.Health = Elm.Health || {};
+Elm.Health.make = function (_elm) {
+   "use strict";
+   _elm.Health = _elm.Health || {};
+   if (_elm.Health.values)
+   return _elm.Health.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Health",
+   $Attributes = Elm.Attributes.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Dict = Elm.Dict.make(_elm),
+   $Effects = Elm.Effects.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
+   $Http = Elm.Http.make(_elm),
+   $Json$Decode = Elm.Json.Decode.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $Task = Elm.Task.make(_elm);
+   var isFocused = F2(function (name,
+   focus) {
+      return function () {
+         switch (focus.ctor)
+         {case "Just":
+            switch (focus._0.ctor)
+              {case "_Tuple2":
+                 return _U.eq(name,focus._0._0);}
+              break;
+            case "Nothing": return false;}
+         _U.badCase($moduleName,
+         "between lines 238 and 240");
+      }();
+   });
+   var hasNotes = function (check) {
+      return !_U.eq(check.notes,
+      "");
+   };
+   var addCheck = F2(function (check,
+   val) {
+      return function () {
+         switch (val.ctor)
+         {case "Just":
+            return $Maybe.Just(A2($List._op["::"],
+              check,
+              val._0));
+            case "Nothing":
+            return $Maybe.Just(_L.fromArray([check]));}
+         _U.badCase($moduleName,
+         "between lines 210 and 212");
+      }();
+   });
+   var updateCheckDict = F3(function (selector,
+   check,
+   checks) {
+      return A3($Dict.update,
+      selector(check),
+      addCheck(check),
+      checks);
+   });
+   var groupBy = F2(function (selector,
+   checks) {
+      return A3($List.foldl,
+      updateCheckDict(selector),
+      $Dict.empty,
+      checks);
+   });
+   var displayGrouping = function (checks) {
+      return $Dict.fromList($List.map(function (_v6) {
+         return function () {
+            switch (_v6.ctor)
+            {case "_Tuple2":
+               return _U.eq(_v6._0,
+                 "") ? {ctor: "_Tuple2"
+                       ,_0: "consul"
+                       ,_1: _v6._1} : {ctor: "_Tuple2"
+                                      ,_0: _v6._0
+                                      ,_1: _v6._1};}
+            _U.badCase($moduleName,
+            "between lines 228 and 230");
+         }();
+      })($Dict.toList(groupBy(function (_) {
+         return _.serviceName;
+      })(checks))));
+   };
+   var attributes = function (attrs) {
+      return A2($Html.dl,
+      _L.fromArray([$Html$Attributes.$class("attributes")]),
+      $List.map(function (_v10) {
+         return function () {
+            switch (_v10.ctor)
+            {case "_Tuple2":
+               return A2($Html.div,
+                 _L.fromArray([$Html$Attributes.$class("attribute")]),
+                 _L.fromArray([A2($Html.dt,
+                              _L.fromArray([]),
+                              _L.fromArray([$Html.text(_v10._0)]))
+                              ,A2($Html.dd,
+                              _L.fromArray([]),
+                              _L.fromArray([A2($Html.code,
+                              _L.fromArray([]),
+                              _L.fromArray([$Html.text(_v10._1)]))]))]));}
+            _U.badCase($moduleName,
+            "between lines 137 and 139");
+         }();
+      })(attrs));
+   };
+   var statusToString = function (status) {
+      return function () {
+         switch (status.ctor)
+         {case "Other":
+            return A2($Basics._op["++"],
+              "Unknown Status: ",
+              status._0);}
+         return $Basics.toString(status);
+      }();
+   };
+   var statusToClass = function (status) {
+      return function () {
+         switch (status.ctor)
+         {case "Critical":
+            return "critical";
+            case "Other": return "other";
+            case "Passing":
+            return "passing";
+            case "Unknown":
+            return "unknown";
+            case "Warning":
+            return "warning";}
+         _U.badCase($moduleName,
+         "between lines 115 and 120");
+      }();
+   };
+   var healthDot = F2(function (status,
+   size) {
+      return A2($Html.span,
+      _L.fromArray([$Attributes.classes(_L.fromArray(["healthdot"
+                                                     ,size
+                                                     ,statusToClass(status)]))]),
+      _L.fromArray([$Html.text(statusToString(status))]));
+   });
+   var checkDetail = F2(function (address,
+   check) {
+      return A2($Html.div,
+      _L.fromArray([$Attributes.classes(_L.fromArray(["check"
+                                                     ,"card"
+                                                     ,"card-block"
+                                                     ,statusToClass(check.status)]))]),
+      _L.fromArray([A2($Html.h2,
+                   _L.fromArray([]),
+                   _L.fromArray([$Html.text(check.name)]))
+                   ,attributes(_L.fromArray([{ctor: "_Tuple2"
+                                             ,_0: "Status"
+                                             ,_1: statusToString(check.status)}
+                                            ,{ctor: "_Tuple2"
+                                             ,_0: "Check ID"
+                                             ,_1: check.checkID}
+                                            ,{ctor: "_Tuple2"
+                                             ,_0: "Node"
+                                             ,_1: check.node}
+                                            ,{ctor: "_Tuple2"
+                                             ,_0: "Service ID"
+                                             ,_1: check.serviceID}
+                                            ,{ctor: "_Tuple2"
+                                             ,_0: "Service Name"
+                                             ,_1: check.serviceName}]))
+                   ,A2($Html.p,
+                   _L.fromArray([$Html$Attributes.classList(_L.fromArray([{ctor: "_Tuple2"
+                                                                          ,_0: "notes"
+                                                                          ,_1: true}
+                                                                         ,{ctor: "_Tuple2"
+                                                                          ,_0: "hidden"
+                                                                          ,_1: $Basics.not($Debug.log("has notes")(hasNotes(check)))}]))]),
+                   _L.fromArray([A2($Html.strong,
+                                _L.fromArray([]),
+                                _L.fromArray([$Html.text("Notes: ")]))
+                                ,$Html.text(check.notes)]))
+                   ,A2($Html.p,
+                   _L.fromArray([]),
+                   _L.fromArray([A2($Html.strong,
+                   _L.fromArray([]),
+                   _L.fromArray([$Html.text("Output:")]))]))
+                   ,A2($Html.pre,
+                   _L.fromArray([$Html$Attributes.$class("output")]),
+                   _L.fromArray([A2($Html.code,
+                   _L.fromArray([]),
+                   _L.fromArray([$Html.text(check.output)]))]))]));
+   });
+   var Focus = function (a) {
+      return {ctor: "Focus",_0: a};
+   };
+   var LoadChecks = {ctor: "LoadChecks"};
+   var NewChecks = function (a) {
+      return {ctor: "NewChecks"
+             ,_0: a};
+   };
+   var Model = F4(function (a,
+   b,
+   c,
+   d) {
+      return {_: {}
+             ,checks: b
+             ,error: c
+             ,focus: d
+             ,status: a};
+   });
+   var Other = function (a) {
+      return {ctor: "Other",_0: a};
+   };
+   var Critical = {ctor: "Critical"};
+   var Warning = {ctor: "Warning"};
+   var Unknown = {ctor: "Unknown"};
+   var worstStatus = function (checks) {
+      return $Maybe.withDefault(Unknown)($List.head($List.sortBy(function (s) {
+         return function () {
+            switch (s.ctor)
+            {case "Critical": return 0;
+               case "Other": return 4;
+               case "Passing": return 3;
+               case "Unknown": return 2;
+               case "Warning": return 1;}
+            _U.badCase($moduleName,
+            "between lines 248 and 253");
+         }();
+      })($List.map(function (_) {
+         return _.status;
+      })(checks))));
+   };
+   var checkSelector = F4(function (address,
+   name,
+   checks,
+   active) {
+      return A2($Html.p,
+      _L.fromArray([$Html$Attributes.classList(_L.fromArray([{ctor: "_Tuple2"
+                                                             ,_0: "service"
+                                                             ,_1: true}
+                                                            ,{ctor: "_Tuple2"
+                                                             ,_0: "card"
+                                                             ,_1: true}
+                                                            ,{ctor: "_Tuple2"
+                                                             ,_0: "card-block"
+                                                             ,_1: true}
+                                                            ,{ctor: "_Tuple2"
+                                                             ,_0: statusToClass(worstStatus(checks))
+                                                             ,_1: true}
+                                                            ,{ctor: "_Tuple2"
+                                                             ,_0: "active"
+                                                             ,_1: active}]))
+                   ,A2($Html$Events.onClick,
+                   address,
+                   Focus(name))]),
+      _L.fromArray([$Html.text(name)]));
+   });
+   var view = F2(function (address,
+   model) {
+      return function () {
+         var content = $List.isEmpty(model.checks) ? A2($Html.p,
+         _L.fromArray([$Html$Attributes.$class("col-sm-12")]),
+         _L.fromArray([$Html.text("No Health Checks loaded")])) : function () {
+            var focusContent = function () {
+               var _v20 = model.focus;
+               switch (_v20.ctor)
+               {case "Just":
+                  switch (_v20._0.ctor)
+                    {case "_Tuple2":
+                       switch (_v20._0._1.ctor)
+                         {case "Just":
+                            return A2($Html.div,
+                              _L.fromArray([]),
+                              _L.fromArray([A2($Html.h1,
+                                           _L.fromArray([]),
+                                           _L.fromArray([A2(healthDot,
+                                                        worstStatus(_v20._0._1._0),
+                                                        "large")
+                                                        ,$Html.text(_v20._0._0)]))
+                                           ,A2($Html.div,
+                                           _L.fromArray([$Html$Attributes.$class("checks")]),
+                                           A2($List.map,
+                                           checkDetail(address),
+                                           _v20._0._1._0))]));
+                            case "Nothing":
+                            return A2($Html.div,
+                              _L.fromArray([]),
+                              _L.fromArray([]));}
+                         break;}
+                    break;
+                  case "Nothing":
+                  return A2($Html.div,
+                    _L.fromArray([]),
+                    _L.fromArray([]));}
+               _U.badCase($moduleName,
+               "between lines 176 and 186");
+            }();
+            var groups = displayGrouping(model.checks);
+            return A2($Html.div,
+            _L.fromArray([$Html$Attributes.$class("col-sm-12")]),
+            _L.fromArray([A2($Html.div,
+                         _L.fromArray([$Attributes.classes(_L.fromArray(["row"
+                                                                        ,"controls"]))]),
+                         _L.fromArray([A2($Html.div,
+                         _L.fromArray([$Html$Attributes.$class("col-sm-12")]),
+                         _L.fromArray([A2($Html.button,
+                         _L.fromArray([$Attributes.classes(_L.fromArray(["btn"
+                                                                        ,"btn-sm"
+                                                                        ,"btn-secondary"]))
+                                      ,A2($Html$Events.onClick,
+                                      address,
+                                      LoadChecks)]),
+                         _L.fromArray([$Html.text("Reload Health Checks")]))]))]))
+                         ,A2($Html.div,
+                         _L.fromArray([$Attributes.classes(_L.fromArray(["row"
+                                                                        ,"healthchecks"]))]),
+                         _L.fromArray([A2($Html.div,
+                                      _L.fromArray([$Attributes.classes(_L.fromArray(["services"
+                                                                                     ,"col-md-3"]))]),
+                                      $List.map(function (_v25) {
+                                         return function () {
+                                            switch (_v25.ctor)
+                                            {case "_Tuple2":
+                                               return A4(checkSelector,
+                                                 address,
+                                                 _v25._0,
+                                                 _v25._1,
+                                                 A2(isFocused,
+                                                 _v25._0,
+                                                 model.focus));}
+                                            _U.badCase($moduleName,
+                                            "between lines 198 and 200");
+                                         }();
+                                      })($Dict.toList(groups)))
+                                      ,A2($Html.div,
+                                      _L.fromArray([$Html$Attributes.$class("col-md-9")]),
+                                      _L.fromArray([focusContent]))]))]));
+         }();
+         return A2($Html.div,
+         _L.fromArray([$Html$Attributes.$class("row")]),
+         _L.fromArray([content]));
+      }();
+   });
+   var statusForService = function (name) {
+      return function ($) {
+         return worstStatus($Maybe.withDefault(_L.fromArray([]))($Dict.get(name)(displayGrouping(function (_) {
+            return _.checks;
+         }($)))));
+      };
+   };
+   var Passing = {ctor: "Passing"};
+   var statusDecoder = $Json$Decode.customDecoder($Json$Decode.string)(function (status) {
+      return function () {
+         switch (status)
+         {case "critical":
+            return $Result.Ok(Critical);
+            case "passing":
+            return $Result.Ok(Passing);
+            case "unknown":
+            return $Result.Ok(Unknown);
+            case "warning":
+            return $Result.Ok(Warning);}
+         return $Result.Ok(Other(status));
+      }();
+   });
+   var Check = F8(function (a,
+   b,
+   c,
+   d,
+   e,
+   f,
+   g,
+   h) {
+      return {_: {}
+             ,checkID: b
+             ,name: c
+             ,node: a
+             ,notes: e
+             ,output: f
+             ,serviceID: g
+             ,serviceName: h
+             ,status: d};
+   });
+   var healthCheckDecoder = A9($Json$Decode.object8,
+   Check,
+   A2($Json$Decode._op[":="],
+   "Node",
+   $Json$Decode.string),
+   A2($Json$Decode._op[":="],
+   "CheckID",
+   $Json$Decode.string),
+   A2($Json$Decode._op[":="],
+   "Name",
+   $Json$Decode.string),
+   A2($Json$Decode._op[":="],
+   "Status",
+   statusDecoder),
+   A2($Json$Decode._op[":="],
+   "Notes",
+   $Json$Decode.string),
+   A2($Json$Decode._op[":="],
+   "Output",
+   $Json$Decode.string),
+   A2($Json$Decode._op[":="],
+   "ServiceID",
+   $Json$Decode.string),
+   A2($Json$Decode._op[":="],
+   "ServiceName",
+   $Json$Decode.string));
+   var loadHealth = $Effects.task($Task.map(NewChecks)($Task.toMaybe(A2($Http.get,
+   $Json$Decode.list(healthCheckDecoder),
+   "/consul/v1/health/state/any"))));
+   var init = {ctor: "_Tuple2"
+              ,_0: {_: {}
+                   ,checks: _L.fromArray([])
+                   ,error: $Maybe.Nothing
+                   ,focus: $Maybe.Nothing
+                   ,status: Unknown}
+              ,_1: loadHealth};
+   var update = F2(function (action,
+   model) {
+      return function () {
+         switch (action.ctor)
+         {case "Focus":
+            return function () {
+                 var groups = displayGrouping(model.checks);
+                 var pair = $Maybe.Just({ctor: "_Tuple2"
+                                        ,_0: action._0
+                                        ,_1: A2($Dict.get,
+                                        action._0,
+                                        groups)});
+                 return {ctor: "_Tuple2"
+                        ,_0: _U.replace([["focus"
+                                         ,pair]],
+                        model)
+                        ,_1: $Effects.none};
+              }();
+            case "LoadChecks":
+            return {ctor: "_Tuple2"
+                   ,_0: model
+                   ,_1: loadHealth};
+            case "NewChecks":
+            switch (action._0.ctor)
+              {case "Just":
+                 return {ctor: "_Tuple2"
+                        ,_0: _U.replace([["checks"
+                                         ,action._0._0]
+                                        ,["status"
+                                         ,worstStatus(action._0._0)]
+                                        ,["error",$Maybe.Nothing]],
+                        model)
+                        ,_1: $Effects.none};
+                 case "Nothing":
+                 return {ctor: "_Tuple2"
+                        ,_0: _U.replace([["error"
+                                         ,$Maybe.Just("Could not retrieve health checks")]],
+                        model)
+                        ,_1: $Effects.none};}
+              break;}
+         _U.badCase($moduleName,
+         "between lines 61 and 79");
+      }();
+   });
+   _elm.Health.values = {_op: _op
+                        ,Check: Check
+                        ,Passing: Passing
+                        ,Unknown: Unknown
+                        ,Warning: Warning
+                        ,Critical: Critical
+                        ,Other: Other
+                        ,Model: Model
+                        ,init: init
+                        ,NewChecks: NewChecks
+                        ,LoadChecks: LoadChecks
+                        ,Focus: Focus
+                        ,update: update
+                        ,loadHealth: loadHealth
+                        ,healthCheckDecoder: healthCheckDecoder
+                        ,statusDecoder: statusDecoder
+                        ,statusToClass: statusToClass
+                        ,statusToString: statusToString
+                        ,healthDot: healthDot
+                        ,attributes: attributes
+                        ,checkSelector: checkSelector
+                        ,checkDetail: checkDetail
+                        ,view: view
+                        ,addCheck: addCheck
+                        ,updateCheckDict: updateCheckDict
+                        ,groupBy: groupBy
+                        ,displayGrouping: displayGrouping
+                        ,hasNotes: hasNotes
+                        ,isFocused: isFocused
+                        ,worstStatus: worstStatus
+                        ,statusForService: statusForService};
+   return _elm.Health.values;
+};
 Elm.History = Elm.History || {};
 Elm.History.make = function (_elm) {
    "use strict";
@@ -4653,6 +5151,7 @@ Elm.Mantl.make = function (_elm) {
    $Attributes = Elm.Attributes.make(_elm),
    $Basics = Elm.Basics.make(_elm),
    $Effects = Elm.Effects.make(_elm),
+   $Health = Elm.Health.make(_elm),
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
@@ -4662,6 +5161,10 @@ Elm.Mantl.make = function (_elm) {
    $Services = Elm.Services.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $Version = Elm.Version.make(_elm);
+   var HealthAction = function (a) {
+      return {ctor: "HealthAction"
+             ,_0: a};
+   };
    var VersionAction = function (a) {
       return {ctor: "VersionAction"
              ,_0: a};
@@ -4678,12 +5181,30 @@ Elm.Mantl.make = function (_elm) {
    model) {
       return function () {
          switch (action.ctor)
-         {case "Refresh":
+         {case "HealthAction":
+            return function () {
+                 var $ = A2($Health.update,
+                 action._0,
+                 model.health),
+                 health = $._0,
+                 fx = $._1;
+                 return {ctor: "_Tuple2"
+                        ,_0: _U.replace([["health"
+                                         ,health]],
+                        model)
+                        ,_1: A2($Effects.map,
+                        HealthAction,
+                        fx)};
+              }();
+            case "Refresh":
             return {ctor: "_Tuple2"
                    ,_0: model
-                   ,_1: A2($Effects.map,
-                   VersionAction,
-                   $Version.getVersion)};
+                   ,_1: $Effects.batch(_L.fromArray([A2($Effects.map,
+                                                    VersionAction,
+                                                    $Version.loadVersion)
+                                                    ,A2($Effects.map,
+                                                    HealthAction,
+                                                    $Health.loadHealth)]))};
             case "RouteAction":
             return function () {
                  var $ = A2($Route.update,
@@ -4730,28 +5251,35 @@ Elm.Mantl.make = function (_elm) {
                         fx)};
               }();}
          _U.badCase($moduleName,
-         "between lines 40 and 64");
+         "between lines 47 and 79");
       }();
    });
    var view = F2(function (address,
    model) {
       return function () {
          var body = function () {
-            var _v4 = model.route;
-            switch (_v4.ctor)
+            var _v5 = model.route;
+            switch (_v5.ctor)
             {case "Just":
-               switch (_v4._0.ctor)
-                 {case "Home":
-                    return A2($Services.view,
+               switch (_v5._0.ctor)
+                 {case "HealthOverview":
+                    return A2($Health.view,
+                      A2($Signal.forwardTo,
+                      address,
+                      HealthAction),
+                      model.health);
+                    case "Home":
+                    return A3($Services.view,
                       A2($Signal.forwardTo,
                       address,
                       ServicesAction),
-                      model.services);}
+                      model.services,
+                      model.health);}
                  break;
                case "Nothing":
                return $Route.notfound;}
             _U.badCase($moduleName,
-            "between lines 72 and 76");
+            "between lines 87 and 95");
          }();
          return A2($Html.div,
          _L.fromArray([$Html$Attributes.$class("app")]),
@@ -4760,11 +5288,12 @@ Elm.Mantl.make = function (_elm) {
                       address,
                       VersionAction),
                       model.version)
-                      ,A2($Route.view,
+                      ,A3($Route.view,
                       A2($Signal.forwardTo,
                       address,
                       RouteAction),
-                      model.route)
+                      model.route,
+                      model.health)
                       ,A2($Html.div,
                       _L.fromArray([$Attributes.classes(_L.fromArray(["container"
                                                                      ,"content"]))]),
@@ -4778,6 +5307,9 @@ Elm.Mantl.make = function (_elm) {
    });
    var Refresh = {ctor: "Refresh"};
    var init = function () {
+      var $ = $Health.init,
+      health = $._0,
+      hfx = $._1;
       var $ = $Version.init,
       version = $._0,
       vfx = $._1;
@@ -4787,6 +5319,7 @@ Elm.Mantl.make = function (_elm) {
       var route = $Route.init;
       return {ctor: "_Tuple2"
              ,_0: {_: {}
+                  ,health: health
                   ,route: route
                   ,services: services
                   ,version: version}
@@ -4795,12 +5328,17 @@ Elm.Mantl.make = function (_elm) {
                                               sfx)
                                               ,A2($Effects.map,
                                               VersionAction,
-                                              vfx)]))};
+                                              vfx)
+                                              ,A2($Effects.map,
+                                              HealthAction,
+                                              hfx)]))};
    }();
-   var Model = F3(function (a,
+   var Model = F4(function (a,
    b,
-   c) {
+   c,
+   d) {
       return {_: {}
+             ,health: d
              ,route: a
              ,services: b
              ,version: c};
@@ -4812,6 +5350,7 @@ Elm.Mantl.make = function (_elm) {
                        ,RouteAction: RouteAction
                        ,ServicesAction: ServicesAction
                        ,VersionAction: VersionAction
+                       ,HealthAction: HealthAction
                        ,update: update
                        ,view: view};
    return _elm.Mantl.values;
@@ -13391,6 +13930,7 @@ Elm.Route.make = function (_elm) {
    $Attributes = Elm.Attributes.make(_elm),
    $Basics = Elm.Basics.make(_elm),
    $Effects = Elm.Effects.make(_elm),
+   $Health = Elm.Health.make(_elm),
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
@@ -13407,9 +13947,11 @@ Elm.Route.make = function (_elm) {
       return function () {
          var url = function () {
             switch (loc.ctor)
-            {case "Home": return "/";}
+            {case "HealthOverview":
+               return "/health/";
+               case "Home": return "/";}
             _U.badCase($moduleName,
-            "between lines 34 and 36");
+            "between lines 37 and 40");
          }();
          return A2($Basics._op["++"],
          "#",
@@ -13437,6 +13979,7 @@ Elm.Route.make = function (_elm) {
              ,_0: a};
    };
    var init = $Maybe.Nothing;
+   var HealthOverview = {ctor: "HealthOverview"};
    var Home = {ctor: "Home"};
    var locFor = function (path) {
       return function () {
@@ -13446,7 +13989,14 @@ Elm.Route.make = function (_elm) {
          })($String.split("/")(path));
          return function () {
             switch (segments.ctor)
-            {case "[]":
+            {case "::": switch (segments._0)
+                 {case "health":
+                    switch (segments._1.ctor)
+                      {case "[]":
+                         return $Maybe.Just(HealthOverview);}
+                      break;}
+                 break;
+               case "[]":
                return $Maybe.Just(Home);}
             return $Maybe.Nothing;
          }();
@@ -13461,11 +14011,12 @@ Elm.Route.make = function (_elm) {
                    ,_0: locFor(action._0)
                    ,_1: $Effects.none};}
          _U.badCase($moduleName,
-         "between lines 24 and 26");
+         "between lines 27 and 29");
       }();
    });
-   var view = F2(function (address,
-   model) {
+   var view = F3(function (address,
+   model,
+   health) {
       return function () {
          var link = navItem(model);
          return A2($Html.div,
@@ -13481,12 +14032,30 @@ Elm.Route.make = function (_elm) {
                       _L.fromArray([$Attributes.classes(_L.fromArray(["nav"
                                                                      ,"navbar-nav"]))]),
                       _L.fromArray([A2(link,
-                      Home,
-                      "Home")]))]))]));
+                                   Home,
+                                   "Home")
+                                   ,A2(link,
+                                   HealthOverview,
+                                   "Health")]))
+                      ,A2($Html.div,
+                      _L.fromArray([$Attributes.classes(_L.fromArray(["nav"
+                                                                     ,"navbar-nav"
+                                                                     ,"pull-right"]))]),
+                      _L.fromArray([A2($Html.a,
+                      _L.fromArray([$Attributes.classes(_L.fromArray(["nav-item"
+                                                                     ,"nav-link"
+                                                                     ,"health"
+                                                                     ,$Health.statusToClass(health.status)]))
+                                   ,$Html$Attributes.href(urlFor(HealthOverview))]),
+                      _L.fromArray([A2($Health.healthDot,
+                                   health.status,
+                                   "small")
+                                   ,$Html.text($Health.statusToString(health.status))]))]))]))]));
       }();
    });
    _elm.Route.values = {_op: _op
                        ,Home: Home
+                       ,HealthOverview: HealthOverview
                        ,init: init
                        ,PathChange: PathChange
                        ,update: update
@@ -13511,6 +14080,7 @@ Elm.Services.make = function (_elm) {
    $Attributes = Elm.Attributes.make(_elm),
    $Basics = Elm.Basics.make(_elm),
    $Effects = Elm.Effects.make(_elm),
+   $Health = Elm.Health.make(_elm),
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $Html$Events = Elm.Html.Events.make(_elm),
@@ -13519,9 +14089,11 @@ Elm.Services.make = function (_elm) {
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
+   $Route = Elm.Route.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $Task = Elm.Task.make(_elm);
-   var serviceView = F2(function (address,
+   var serviceView = F3(function (address,
+   health,
    service) {
       return A2($Html.div,
       _L.fromArray([$Attributes.classes(_L.fromArray(["col-sm-3"
@@ -13542,15 +14114,25 @@ Elm.Services.make = function (_elm) {
                                                                   ,"btn-block"
                                                                   ,"btn-primary"]))
                                 ,$Html$Attributes.href(service.path)]),
-                   _L.fromArray([$Html.text("Web UI")]))]))]));
+                   _L.fromArray([$Html.text("Web UI")]))
+                   ,A2($Html.a,
+                   _L.fromArray([$Attributes.classes(_L.fromArray(["btn"
+                                                                  ,"btn-block"
+                                                                  ,"btn-health"
+                                                                  ,$Health.statusToClass(health)]))
+                                ,$Html$Attributes.href($Route.urlFor($Route.HealthOverview))]),
+                   _L.fromArray([$Html.text(A2($Basics._op["++"],
+                   "Checks: ",
+                   $Health.statusToString(health)))]))]))]));
    });
    var NewServices = function (a) {
       return {ctor: "NewServices"
              ,_0: a};
    };
    var LoadServices = {ctor: "LoadServices"};
-   var view = F2(function (address,
-   model) {
+   var view = F3(function (address,
+   model,
+   health) {
       return function () {
          var content = function () {
             switch (model.ctor)
@@ -13573,15 +14155,20 @@ Elm.Services.make = function (_elm) {
                               ,A2($Html.div,
                               _L.fromArray([$Attributes.classes(_L.fromArray(["row"
                                                                              ,"services"]))]),
-                              A2($List.map,
-                              serviceView(address),
-                              model._0))]));
+                              $List.map(function (s) {
+                                 return A3(serviceView,
+                                 address,
+                                 A2($Health.statusForService,
+                                 s.name,
+                                 health),
+                                 s);
+                              })(model._0))]));
                case "Nothing":
                return A2($Html.p,
                  _L.fromArray([$Html$Attributes.$class("col-sm-12")]),
                  _L.fromArray([$Html.text("No services loaded")]));}
             _U.badCase($moduleName,
-            "between lines 73 and 86");
+            "between lines 78 and 94");
          }();
          return A2($Html.div,
          _L.fromArray([$Html$Attributes.$class("row")]),
@@ -15117,12 +15704,12 @@ Elm.Version.make = function (_elm) {
       return {ctor: "NewVersion"
              ,_0: a};
    };
-   var getVersion = $Effects.task($Task.map(NewVersion)($Task.toMaybe($Http.getString("signature"))));
+   var loadVersion = $Effects.task($Task.map(NewVersion)($Task.toMaybe($Http.getString("signature"))));
    var init = {ctor: "_Tuple2"
               ,_0: {_: {}
                    ,current: $Maybe.Nothing
                    ,hasUpdate: false}
-              ,_1: getVersion};
+              ,_1: loadVersion};
    var Model = F2(function (a,b) {
       return {_: {}
              ,current: a
@@ -15133,7 +15720,7 @@ Elm.Version.make = function (_elm) {
                          ,init: init
                          ,NewVersion: NewVersion
                          ,update: update
-                         ,getVersion: getVersion
+                         ,loadVersion: loadVersion
                          ,notification: notification
                          ,version: version
                          ,view: view};
