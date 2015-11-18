@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# 9736322ee9274cc7d2b42da2504042a542d8584e
+# 2b5f7e38a5c2ce3ca046549902358fbe347d8770
 
 NETWORK:
 *
@@ -19,6 +19,8 @@ CACHE:
 ./images/logos/marathon@2x.png
 ./images/logos/mesos.png
 ./images/logos/mesos@2x.png
+./images/logos/traefik.png
+./images/logos/traefik@2x.png
 ./index.html
 ./scripts/lib.js
 ./scripts/lib.js.gz

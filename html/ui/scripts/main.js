@@ -2873,20 +2873,18 @@ Elm.Health.make = function (_elm) {
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
+   $Route = Elm.Route.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $Task = Elm.Task.make(_elm);
    var isFocused = F2(function (name,
    focus) {
       return function () {
          switch (focus.ctor)
-         {case "Just":
-            switch (focus._0.ctor)
-              {case "_Tuple2":
-                 return _U.eq(name,focus._0._0);}
-              break;
+         {case "Just": return _U.eq(name,
+              focus._0);
             case "Nothing": return false;}
          _U.badCase($moduleName,
-         "between lines 238 and 240");
+         "between lines 233 and 235");
       }();
    });
    var hasNotes = function (check) {
@@ -2904,7 +2902,7 @@ Elm.Health.make = function (_elm) {
             case "Nothing":
             return $Maybe.Just(_L.fromArray([check]));}
          _U.badCase($moduleName,
-         "between lines 210 and 212");
+         "between lines 205 and 207");
       }();
    });
    var updateCheckDict = F3(function (selector,
@@ -2923,18 +2921,18 @@ Elm.Health.make = function (_elm) {
       checks);
    });
    var displayGrouping = function (checks) {
-      return $Dict.fromList($List.map(function (_v6) {
+      return $Dict.fromList($List.map(function (_v4) {
          return function () {
-            switch (_v6.ctor)
+            switch (_v4.ctor)
             {case "_Tuple2":
-               return _U.eq(_v6._0,
+               return _U.eq(_v4._0,
                  "") ? {ctor: "_Tuple2"
                        ,_0: "consul"
-                       ,_1: _v6._1} : {ctor: "_Tuple2"
-                                      ,_0: _v6._0
-                                      ,_1: _v6._1};}
+                       ,_1: _v4._1} : {ctor: "_Tuple2"
+                                      ,_0: _v4._0
+                                      ,_1: _v4._1};}
             _U.badCase($moduleName,
-            "between lines 228 and 230");
+            "between lines 223 and 225");
          }();
       })($Dict.toList(groupBy(function (_) {
          return _.serviceName;
@@ -2943,22 +2941,22 @@ Elm.Health.make = function (_elm) {
    var attributes = function (attrs) {
       return A2($Html.dl,
       _L.fromArray([$Html$Attributes.$class("attributes")]),
-      $List.map(function (_v10) {
+      $List.map(function (_v8) {
          return function () {
-            switch (_v10.ctor)
+            switch (_v8.ctor)
             {case "_Tuple2":
                return A2($Html.div,
                  _L.fromArray([$Html$Attributes.$class("attribute")]),
                  _L.fromArray([A2($Html.dt,
                               _L.fromArray([]),
-                              _L.fromArray([$Html.text(_v10._0)]))
+                              _L.fromArray([$Html.text(_v8._0)]))
                               ,A2($Html.dd,
                               _L.fromArray([]),
                               _L.fromArray([A2($Html.code,
                               _L.fromArray([]),
-                              _L.fromArray([$Html.text(_v10._1)]))]))]));}
+                              _L.fromArray([$Html.text(_v8._1)]))]))]));}
             _U.badCase($moduleName,
-            "between lines 137 and 139");
+            "between lines 126 and 128");
          }();
       })(attrs));
    };
@@ -2985,7 +2983,7 @@ Elm.Health.make = function (_elm) {
             case "Warning":
             return "warning";}
          _U.badCase($moduleName,
-         "between lines 115 and 120");
+         "between lines 104 and 109");
       }();
    };
    var healthDot = F2(function (status,
@@ -3043,22 +3041,17 @@ Elm.Health.make = function (_elm) {
                    _L.fromArray([]),
                    _L.fromArray([$Html.text(check.output)]))]))]));
    });
-   var Focus = function (a) {
-      return {ctor: "Focus",_0: a};
-   };
    var LoadChecks = {ctor: "LoadChecks"};
    var NewChecks = function (a) {
       return {ctor: "NewChecks"
              ,_0: a};
    };
-   var Model = F4(function (a,
+   var Model = F3(function (a,
    b,
-   c,
-   d) {
+   c) {
       return {_: {}
              ,checks: b
              ,error: c
-             ,focus: d
              ,status: a};
    });
    var Other = function (a) {
@@ -3077,7 +3070,7 @@ Elm.Health.make = function (_elm) {
                case "Unknown": return 2;
                case "Warning": return 1;}
             _U.badCase($moduleName,
-            "between lines 248 and 253");
+            "between lines 243 and 248");
          }();
       })($List.map(function (_) {
          return _.status;
@@ -3087,7 +3080,7 @@ Elm.Health.make = function (_elm) {
    name,
    checks,
    active) {
-      return A2($Html.p,
+      return A2($Html.a,
       _L.fromArray([$Html$Attributes.classList(_L.fromArray([{ctor: "_Tuple2"
                                                              ,_0: "service"
                                                              ,_1: true}
@@ -3103,52 +3096,68 @@ Elm.Health.make = function (_elm) {
                                                             ,{ctor: "_Tuple2"
                                                              ,_0: "active"
                                                              ,_1: active}]))
-                   ,A2($Html$Events.onClick,
-                   address,
-                   Focus(name))]),
+                   ,$Html$Attributes.href($Route.urlFor($Route.HealthCheck(name)))]),
       _L.fromArray([$Html.text(name)]));
    });
-   var view = F2(function (address,
-   model) {
+   var view = F3(function (address,
+   model,
+   focus) {
       return function () {
          var content = $List.isEmpty(model.checks) ? A2($Html.p,
          _L.fromArray([$Html$Attributes.$class("col-sm-12")]),
          _L.fromArray([$Html.text("No Health Checks loaded")])) : function () {
-            var focusContent = function () {
-               var _v20 = model.focus;
-               switch (_v20.ctor)
+            var groups = displayGrouping(model.checks);
+            var focusedGroup = function () {
+               switch (focus.ctor)
                {case "Just":
+                  return A2($Dict.get,
+                    focus._0,
+                    groups);
+                  case "Nothing":
+                  return $Maybe.Nothing;}
+               _U.badCase($moduleName,
+               "between lines 165 and 168");
+            }();
+            var focusContent = function () {
+               var _v20 = {ctor: "_Tuple2"
+                          ,_0: focus
+                          ,_1: focusedGroup};
+               switch (_v20.ctor)
+               {case "_Tuple2":
                   switch (_v20._0.ctor)
-                    {case "_Tuple2":
-                       switch (_v20._0._1.ctor)
+                    {case "Just":
+                       switch (_v20._1.ctor)
                          {case "Just":
                             return A2($Html.div,
                               _L.fromArray([]),
                               _L.fromArray([A2($Html.h1,
                                            _L.fromArray([]),
                                            _L.fromArray([A2(healthDot,
-                                                        worstStatus(_v20._0._1._0),
+                                                        worstStatus(_v20._1._0),
                                                         "large")
                                                         ,$Html.text(_v20._0._0)]))
                                            ,A2($Html.div,
                                            _L.fromArray([$Html$Attributes.$class("checks")]),
                                            A2($List.map,
                                            checkDetail(address),
-                                           _v20._0._1._0))]));
+                                           _v20._1._0))]));
                             case "Nothing":
                             return A2($Html.div,
                               _L.fromArray([]),
-                              _L.fromArray([]));}
-                         break;}
-                    break;
-                  case "Nothing":
-                  return A2($Html.div,
-                    _L.fromArray([]),
-                    _L.fromArray([]));}
+                              _L.fromArray([A2($Html.h1,
+                              _L.fromArray([]),
+                              _L.fromArray([$Html.text(A2($Basics._op["++"],
+                              "No health checks found for ",
+                              _v20._0._0))]))]));}
+                         break;
+                       case "Nothing":
+                       return A2($Html.div,
+                         _L.fromArray([]),
+                         _L.fromArray([]));}
+                    break;}
                _U.badCase($moduleName,
-               "between lines 176 and 186");
+               "between lines 169 and 181");
             }();
-            var groups = displayGrouping(model.checks);
             return A2($Html.div,
             _L.fromArray([$Html$Attributes.$class("col-sm-12")]),
             _L.fromArray([A2($Html.div,
@@ -3178,11 +3187,9 @@ Elm.Health.make = function (_elm) {
                                                  address,
                                                  _v25._0,
                                                  _v25._1,
-                                                 A2(isFocused,
-                                                 _v25._0,
-                                                 model.focus));}
+                                                 A2(isFocused,_v25._0,focus));}
                                             _U.badCase($moduleName,
-                                            "between lines 198 and 200");
+                                            "between lines 193 and 195");
                                          }();
                                       })($Dict.toList(groups)))
                                       ,A2($Html.div,
@@ -3267,28 +3274,13 @@ Elm.Health.make = function (_elm) {
               ,_0: {_: {}
                    ,checks: _L.fromArray([])
                    ,error: $Maybe.Nothing
-                   ,focus: $Maybe.Nothing
                    ,status: Unknown}
               ,_1: loadHealth};
    var update = F2(function (action,
    model) {
       return function () {
          switch (action.ctor)
-         {case "Focus":
-            return function () {
-                 var groups = displayGrouping(model.checks);
-                 var pair = $Maybe.Just({ctor: "_Tuple2"
-                                        ,_0: action._0
-                                        ,_1: A2($Dict.get,
-                                        action._0,
-                                        groups)});
-                 return {ctor: "_Tuple2"
-                        ,_0: _U.replace([["focus"
-                                         ,pair]],
-                        model)
-                        ,_1: $Effects.none};
-              }();
-            case "LoadChecks":
+         {case "LoadChecks":
             return {ctor: "_Tuple2"
                    ,_0: model
                    ,_1: loadHealth};
@@ -3311,7 +3303,7 @@ Elm.Health.make = function (_elm) {
                         ,_1: $Effects.none};}
               break;}
          _U.badCase($moduleName,
-         "between lines 61 and 79");
+         "between lines 57 and 68");
       }();
    });
    _elm.Health.values = {_op: _op
@@ -3325,7 +3317,6 @@ Elm.Health.make = function (_elm) {
                         ,init: init
                         ,NewChecks: NewChecks
                         ,LoadChecks: LoadChecks
-                        ,Focus: Focus
                         ,update: update
                         ,loadHealth: loadHealth
                         ,healthCheckDecoder: healthCheckDecoder
@@ -5173,6 +5164,92 @@ Elm.Mantl.make = function (_elm) {
       return {ctor: "ServicesAction"
              ,_0: a};
    };
+   var view = F2(function (address,
+   model) {
+      return function () {
+         var body = function () {
+            var _v0 = model.route;
+            switch (_v0.ctor)
+            {case "Just":
+               switch (_v0._0.ctor)
+                 {case "HealthCheck":
+                    return A3($Health.view,
+                      A2($Signal.forwardTo,
+                      address,
+                      HealthAction),
+                      model.health,
+                      $Maybe.Just(_v0._0._0));
+                    case "HealthOverview":
+                    return A3($Health.view,
+                      A2($Signal.forwardTo,
+                      address,
+                      HealthAction),
+                      model.health,
+                      $Maybe.Nothing);
+                    case "Home":
+                    return A3($Services.view,
+                      A2($Signal.forwardTo,
+                      address,
+                      ServicesAction),
+                      model.services,
+                      model.health);}
+                 break;
+               case "Nothing":
+               return $Route.notfound;}
+            _U.badCase($moduleName,
+            "between lines 88 and 99");
+         }();
+         var link = $Route.navItem(model.route);
+         return A2($Html.div,
+         _L.fromArray([$Html$Attributes.$class("app")]),
+         _L.fromArray([A2($Version.notification,
+                      A2($Signal.forwardTo,
+                      address,
+                      VersionAction),
+                      model.version)
+                      ,A2($Html.div,
+                      _L.fromArray([$Attributes.classes(_L.fromArray(["navbar"
+                                                                     ,"navbar-inverted"]))]),
+                      _L.fromArray([A2($Html.div,
+                      _L.fromArray([$Html$Attributes.$class("container")]),
+                      _L.fromArray([A2($Html.a,
+                                   _L.fromArray([$Html$Attributes.$class("navbar-brand")
+                                                ,$Html$Attributes.href($Route.urlFor($Route.Home))]),
+                                   _L.fromArray([$Html.text("Mantl")]))
+                                   ,A2($Html.ul,
+                                   _L.fromArray([$Attributes.classes(_L.fromArray(["nav"
+                                                                                  ,"navbar-nav"]))]),
+                                   _L.fromArray([A2(link,
+                                                $Route.Home,
+                                                "Home")
+                                                ,A2(link,
+                                                $Route.HealthOverview,
+                                                "Health")]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Attributes.classes(_L.fromArray(["nav"
+                                                                                  ,"navbar-nav"
+                                                                                  ,"pull-right"]))]),
+                                   _L.fromArray([A2($Html.a,
+                                   _L.fromArray([$Attributes.classes(_L.fromArray(["nav-item"
+                                                                                  ,"nav-link"
+                                                                                  ,"health"
+                                                                                  ,$Health.statusToClass(model.health.status)]))
+                                                ,$Html$Attributes.href($Route.urlFor($Route.HealthOverview))]),
+                                   _L.fromArray([A2($Health.healthDot,
+                                                model.health.status,
+                                                "small")
+                                                ,$Html.text($Health.statusToString(model.health.status))]))]))]))]))
+                      ,A2($Html.div,
+                      _L.fromArray([$Attributes.classes(_L.fromArray(["container"
+                                                                     ,"content"]))]),
+                      _L.fromArray([body
+                                   ,A2($Version.view,
+                                   A2($Signal.forwardTo,
+                                   address,
+                                   VersionAction),
+                                   model.version)]))]));
+      }();
+   });
    var RouteAction = function (a) {
       return {ctor: "RouteAction"
              ,_0: a};
@@ -5252,57 +5329,6 @@ Elm.Mantl.make = function (_elm) {
               }();}
          _U.badCase($moduleName,
          "between lines 47 and 79");
-      }();
-   });
-   var view = F2(function (address,
-   model) {
-      return function () {
-         var body = function () {
-            var _v5 = model.route;
-            switch (_v5.ctor)
-            {case "Just":
-               switch (_v5._0.ctor)
-                 {case "HealthOverview":
-                    return A2($Health.view,
-                      A2($Signal.forwardTo,
-                      address,
-                      HealthAction),
-                      model.health);
-                    case "Home":
-                    return A3($Services.view,
-                      A2($Signal.forwardTo,
-                      address,
-                      ServicesAction),
-                      model.services,
-                      model.health);}
-                 break;
-               case "Nothing":
-               return $Route.notfound;}
-            _U.badCase($moduleName,
-            "between lines 87 and 95");
-         }();
-         return A2($Html.div,
-         _L.fromArray([$Html$Attributes.$class("app")]),
-         _L.fromArray([A2($Version.notification,
-                      A2($Signal.forwardTo,
-                      address,
-                      VersionAction),
-                      model.version)
-                      ,A3($Route.view,
-                      A2($Signal.forwardTo,
-                      address,
-                      RouteAction),
-                      model.route,
-                      model.health)
-                      ,A2($Html.div,
-                      _L.fromArray([$Attributes.classes(_L.fromArray(["container"
-                                                                     ,"content"]))]),
-                      _L.fromArray([body
-                                   ,A2($Version.view,
-                                   A2($Signal.forwardTo,
-                                   address,
-                                   VersionAction),
-                                   model.version)]))]));
       }();
    });
    var Refresh = {ctor: "Refresh"};
@@ -13927,10 +13953,8 @@ Elm.Route.make = function (_elm) {
    _U = _N.Utils.make(_elm),
    _L = _N.List.make(_elm),
    $moduleName = "Route",
-   $Attributes = Elm.Attributes.make(_elm),
    $Basics = Elm.Basics.make(_elm),
    $Effects = Elm.Effects.make(_elm),
-   $Health = Elm.Health.make(_elm),
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
@@ -13947,39 +13971,67 @@ Elm.Route.make = function (_elm) {
       return function () {
          var url = function () {
             switch (loc.ctor)
-            {case "HealthOverview":
+            {case "HealthCheck":
+               return A2($Basics._op["++"],
+                 "/health/",
+                 A2($Basics._op["++"],
+                 loc._0,
+                 "/"));
+               case "HealthOverview":
                return "/health/";
                case "Home": return "/";}
             _U.badCase($moduleName,
-            "between lines 37 and 40");
+            "between lines 38 and 42");
          }();
          return A2($Basics._op["++"],
          "#",
          url);
       }();
    };
-   var navItem = F3(function (model,
-   page,
-   caption) {
-      return A2($Html.li,
-      _L.fromArray([$Html$Attributes.classList(_L.fromArray([{ctor: "_Tuple2"
-                                                             ,_0: "nav-item"
-                                                             ,_1: true}
-                                                            ,{ctor: "_Tuple2"
-                                                             ,_0: "active"
-                                                             ,_1: _U.eq(model,
-                                                             $Maybe.Just(page))}]))]),
-      _L.fromArray([A2($Html.a,
-      _L.fromArray([$Html$Attributes.$class("nav-link")
-                   ,$Html$Attributes.href(urlFor(page))]),
-      _L.fromArray([$Html.text(caption)]))]));
-   });
    var PathChange = function (a) {
       return {ctor: "PathChange"
              ,_0: a};
    };
    var init = $Maybe.Nothing;
+   var HealthCheck = function (a) {
+      return {ctor: "HealthCheck"
+             ,_0: a};
+   };
    var HealthOverview = {ctor: "HealthOverview"};
+   var parentFor = function (child) {
+      return function () {
+         switch (child.ctor)
+         {case "HealthCheck":
+            return HealthOverview;}
+         return child;
+      }();
+   };
+   var navItem = F3(function (model,
+   page,
+   caption) {
+      return function () {
+         var active = function () {
+            switch (model.ctor)
+            {case "Just":
+               return _U.eq(parentFor(model._0),
+                 page);
+               case "Nothing": return false;}
+            _U.badCase($moduleName,
+            "between lines 77 and 80");
+         }();
+         return A2($Html.li,
+         _L.fromArray([$Html$Attributes.classList(_L.fromArray([{ctor: "_Tuple2"
+                                                                ,_0: "nav-item"
+                                                                ,_1: true}
+                                                               ,{ctor: "_Tuple2"
+                                                                ,_0: "active"
+                                                                ,_1: active}]))]),
+         _L.fromArray([A2($Html.a,
+         _L.fromArray([$Html$Attributes.$class("nav-link")
+                      ,$Html$Attributes.href(urlFor(page))]),
+         _L.fromArray([$Html.text(caption)]))]));
+      }();
+   });
    var Home = {ctor: "Home"};
    var locFor = function (path) {
       return function () {
@@ -13992,7 +14044,12 @@ Elm.Route.make = function (_elm) {
             {case "::": switch (segments._0)
                  {case "health":
                     switch (segments._1.ctor)
-                      {case "[]":
+                      {case "::":
+                         switch (segments._1._1.ctor)
+                           {case "[]":
+                              return $Maybe.Just(HealthCheck(segments._1._0));}
+                           break;
+                         case "[]":
                          return $Maybe.Just(HealthOverview);}
                       break;}
                  break;
@@ -14011,59 +14068,21 @@ Elm.Route.make = function (_elm) {
                    ,_0: locFor(action._0)
                    ,_1: $Effects.none};}
          _U.badCase($moduleName,
-         "between lines 27 and 29");
-      }();
-   });
-   var view = F3(function (address,
-   model,
-   health) {
-      return function () {
-         var link = navItem(model);
-         return A2($Html.div,
-         _L.fromArray([$Attributes.classes(_L.fromArray(["navbar"
-                                                        ,"navbar-inverted"]))]),
-         _L.fromArray([A2($Html.div,
-         _L.fromArray([$Html$Attributes.$class("container")]),
-         _L.fromArray([A2($Html.a,
-                      _L.fromArray([$Html$Attributes.$class("navbar-brand")
-                                   ,$Html$Attributes.href(urlFor(Home))]),
-                      _L.fromArray([$Html.text("Mantl")]))
-                      ,A2($Html.ul,
-                      _L.fromArray([$Attributes.classes(_L.fromArray(["nav"
-                                                                     ,"navbar-nav"]))]),
-                      _L.fromArray([A2(link,
-                                   Home,
-                                   "Home")
-                                   ,A2(link,
-                                   HealthOverview,
-                                   "Health")]))
-                      ,A2($Html.div,
-                      _L.fromArray([$Attributes.classes(_L.fromArray(["nav"
-                                                                     ,"navbar-nav"
-                                                                     ,"pull-right"]))]),
-                      _L.fromArray([A2($Html.a,
-                      _L.fromArray([$Attributes.classes(_L.fromArray(["nav-item"
-                                                                     ,"nav-link"
-                                                                     ,"health"
-                                                                     ,$Health.statusToClass(health.status)]))
-                                   ,$Html$Attributes.href(urlFor(HealthOverview))]),
-                      _L.fromArray([A2($Health.healthDot,
-                                   health.status,
-                                   "small")
-                                   ,$Html.text($Health.statusToString(health.status))]))]))]))]));
+         "between lines 28 and 30");
       }();
    });
    _elm.Route.values = {_op: _op
                        ,Home: Home
                        ,HealthOverview: HealthOverview
+                       ,HealthCheck: HealthCheck
                        ,init: init
                        ,PathChange: PathChange
                        ,update: update
                        ,urlFor: urlFor
                        ,locFor: locFor
+                       ,parentFor: parentFor
                        ,notfound: notfound
-                       ,navItem: navItem
-                       ,view: view};
+                       ,navItem: navItem};
    return _elm.Route.values;
 };
 Elm.Services = Elm.Services || {};
@@ -14104,7 +14123,7 @@ Elm.Services.make = function (_elm) {
       _L.fromArray([A2($Html.div,
                    _L.fromArray([$Html$Attributes.$class("logo")]),
                    _L.fromArray([A2($Html.div,
-                   _L.fromArray([$Html$Attributes.$class(service.name)]),
+                   _L.fromArray([$Html$Attributes.$class(service.id)]),
                    _L.fromArray([]))]))
                    ,A2($Html.h4,
                    _L.fromArray([$Html$Attributes.$class("card-title")]),
@@ -14120,7 +14139,7 @@ Elm.Services.make = function (_elm) {
                                                                   ,"btn-block"
                                                                   ,"btn-health"
                                                                   ,$Health.statusToClass(health)]))
-                                ,$Html$Attributes.href($Route.urlFor($Route.HealthOverview))]),
+                                ,$Html$Attributes.href($Route.urlFor($Route.HealthCheck(service.check)))]),
                    _L.fromArray([$Html.text(A2($Basics._op["++"],
                    "Checks: ",
                    $Health.statusToString(health)))]))]))]));
@@ -14159,7 +14178,7 @@ Elm.Services.make = function (_elm) {
                                  return A3(serviceView,
                                  address,
                                  A2($Health.statusForService,
-                                 s.name,
+                                 s.check,
                                  health),
                                  s);
                               })(model._0))]));
@@ -14168,23 +14187,33 @@ Elm.Services.make = function (_elm) {
                  _L.fromArray([$Html$Attributes.$class("col-sm-12")]),
                  _L.fromArray([$Html.text("No services loaded")]));}
             _U.badCase($moduleName,
-            "between lines 78 and 94");
+            "between lines 82 and 98");
          }();
          return A2($Html.div,
          _L.fromArray([$Html$Attributes.$class("row")]),
          _L.fromArray([content]));
       }();
    });
-   var Service = F2(function (a,
-   b) {
+   var Service = F4(function (a,
+   b,
+   c,
+   d) {
       return {_: {}
+             ,check: c
+             ,id: b
              ,name: a
-             ,path: b};
+             ,path: d};
    });
-   var serviceDecoder = A3($Json$Decode.object2,
+   var serviceDecoder = A5($Json$Decode.object4,
    Service,
    A2($Json$Decode._op[":="],
    "name",
+   $Json$Decode.string),
+   A2($Json$Decode._op[":="],
+   "id",
+   $Json$Decode.string),
+   A2($Json$Decode._op[":="],
+   "check",
    $Json$Decode.string),
    A2($Json$Decode._op[":="],
    "path",
