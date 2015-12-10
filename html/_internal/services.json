@@ -1,7 +1,7 @@
 [
     {"name": "Mesos", "id": "mesos", "check": "mesos", "path": "/mesos"},
     {"name": "Marathon", "id": "marathon", "check": "marathon", "path": "/marathon"},
-    {"name": "Consul", "id": "consul", "check": "consul", "path": "/consul"},
+    {"name": "Consul", "id": "consul", "check": "consul", "path": "/consul/ui/"},
     {"name": "Chronos", "id": "chronos", "check": "chronos", "path": "/chronos"},
     {"name": "Traefik", "id": "traefik", "check": "traefik-admin", "path": "/traefik"}
 ]
