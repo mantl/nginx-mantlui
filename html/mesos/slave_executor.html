@@ -1,0 +1,172 @@
+<ol class="breadcrumb">
+  <li>
+    <a class="badge badge-type" href="#">Master</a>
+  </li>
+  <li>
+    <a class="badge badge-type" href="#/slaves/{{slave_id}}" title="{{slave_id}}">
+      Slave</a>
+  </li>
+  <li>
+    <a class="badge badge-type" href="#/slaves/{{slave_id}}/frameworks/{{framework_id}}" title="{{framework_id}}">
+      Framework</a>
+  </li>
+  <li class="active">
+    <span class="badge badge-type">Executor</span>
+    {{executor_id}}
+  </li>
+</ol>
+
+<div class="alert alert-error hide" id="alert">
+  <button class="close" data-dismiss="alert">×</button>
+  <strong>{{alert_message}}</strong>
+</div>
+
+<div class="row" id="slave">
+  <div class="col-md-3">
+    <div class="well">
+      <dl class="inline clearfix">
+        <dt>Executor Name:</dt>
+        <dd>{{executor.name}}</dd>
+        <dt>Executor Source:</dt>
+        <dd>{{executor.source}}</dd>
+      </dl>
+
+      <dl class="inline clearfix">
+        <dt>Cluster:</dt>
+        <dd>
+          <span ng-show="clusterNamed">{{cluster}}</span>
+          <span ng-show="!clusterNamed">
+            (Unnamed)
+            <i class="icon-info-sign"
+              tooltip="To name this cluster, set the --cluster flag when starting the master."
+              tooltip-placement="right"></i>
+          </span>
+        </dd>
+        <dt>Master:</dt>
+        <dd>{{state.master_hostname}}</dd>
+      </dl>
+
+      <dl class="inline clearfix">
+        <dt>Active Tasks:</dt>
+        <dd>{{executor.tasks.length | number}}</dd>
+      </dl>
+
+      <h4>Resources</h4>
+      <table class="table table-condensed">
+        <thead>
+          <tr>
+            <td></td>
+            <td class="text-right">Used</td>
+            <td class="text-right">Allocated</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CPUs</td>
+            <td class="text-right">
+              {{monitor.frameworks[framework.id].executors[executor.id].statistics.cpus_total_usage | number}}
+            </td>
+            <td class="text-right">{{executor.resources.cpus | number}}</td>
+          </tr>
+          <tr>
+            <td>Mem</td>
+            <td class="text-right">
+              {{monitor.frameworks[framework.id].executors[executor.id].statistics.mem_rss_bytes | dataSize}}
+            </td>
+            <td class="text-right">
+              {{executor.resources.mem * (1024 * 1024) | dataSize}}
+            </td>
+          </tr>
+          <tr>
+            <td>Disk</td>
+            <td class="text-right">{{0 | dataSize}}</td>
+            <td class="text-right">
+              {{(executor.resources.disk || 0) * (1024 * 1024) | dataSize}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="col-md-9">
+    <table m-table table-content="executor.queued_tasks" title="Queued Tasks"
+      class="table table-striped table-bordered table-condensed">
+      <thead>
+        <tr>
+          <th data-key="id">ID</th>
+          <th data-key="name">Name</th>
+          <th data-key="resources.cpus">CPUs</th>
+          <th data-key="resources.mem">Mem</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="queued_task in $data">
+          <td>{{queued_task.id}}</td>
+          <td>{{queued_task.name}}</td>
+          <td>{{queued_task.resources.cpus | number}}</td>
+          <td>{{queued_task.resources.mem * (1024 * 1024) | dataSize}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table m-table table-content="executor.tasks" title="Tasks"
+      class="table table-striped table-bordered table-condensed">
+      <thead>
+        <tr>
+          <th data-key="id">ID</th>
+          <th data-key="name">Name</th>
+          <th data-key="state">State</th>
+          <th data-key="resources.cpus">CPUs (allocated)</th>
+          <th data-key="resources.mem">Mem (allocated)</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="task in $data">
+          <td>{{task.id}}</td>
+          <td>{{task.name}}</td>
+          <td>{{task.state}}</td>
+          <td>{{task.resources.cpus | number}}</td>
+          <td>{{task.resources.mem * (1024 * 1024) | dataSize}}</td>
+          <td>
+            <a href="{{'#/slaves/' + slave_id + '/browse?path=' +
+                       encodeURIComponent(executor.directory)}}">
+              Sandbox
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table m-table table-content="executor.completed_tasks" title="Completed Tasks"
+      class="table table-striped table-bordered table-condensed">
+      <thead>
+        <tr>
+          <th data-key="id">ID</th>
+          <th data-key="name">Name</th>
+          <th data-key="state">State</th>
+          <th data-key="resources.cpus">CPUs (allocated)</th>
+          <th data-key="resources.mem">Mem (allocated)</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="completed_task in $data">
+          <td>{{completed_task.id}}</td>
+          <td>{{completed_task.name}}</td>
+          <td>{{completed_task.state}}</td>
+          <td>{{completed_task.resources.cpus | number}}</td>
+          <td>{{completed_task.resources.mem * (1024 * 1024) | dataSize}}</td>
+          <td>
+            <a href="{{'#/slaves/' + slave_id + '/browse?path=' +
+                       encodeURIComponent(executor.directory)}}">
+              Sandbox
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

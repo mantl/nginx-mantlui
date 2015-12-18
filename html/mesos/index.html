@@ -7,15 +7,15 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link href="static/css/bootstrap-3.0.3.min.css" rel="stylesheet">
-    <link href="static/css/mesos.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-3.0.3.min.css" rel="stylesheet">
+    <link href="/static/css/mesos.css" rel="stylesheet">
 
-    <link rel="shortcut icon" href="static/ico/favicon.ico">
+    <link rel="shortcut icon" href="/static/ico/favicon.ico">
   </head>
 
   <body>
     <div data-ng-show="doneLoading" style="width: 75px; margin: 0 auto; text-align: center;">
-      <img src="static/img/loading.gif" height="64" width="64" alt="">
+      <img src="/static/img/loading.gif" height="64" width="64" alt="">
     </div>
 
     <div ng-controller="MainCntl">
@@ -54,6 +54,15 @@
       </header>
 
       <div class="container">
+        <div class="alert" data-ng-show="state &amp;&amp; !state.leader">
+          <strong>No master is currently leading ...</strong>
+        </div>
+        <div class="alert alert-warning hide" id="not-leader-alert">
+          <button class="close" data-dismiss="alert">×</button>
+          <strong>This master is <u>not the leader</u>, redirecting in {{redirect / 1000}} seconds ...</strong>
+          <a href="/master/redirect">go now</a>
+        </div>
+
         <div data-ng-repeat="alert in currentAlerts" class="alert alert-{{ alert.type }}">
           <p data-ng-show="alert.title">
             <strong>{{ alert.title }}</strong>
@@ -99,16 +108,16 @@
       </div>
     </script>
 
-    <script src="static/js/jquery-1.7.1.min.js"></script>
-    <script src="static/js/underscore-1.4.3.min.js"></script>
-    <script src="static/js/zeroclipboard-1.1.7.js"></script>
-    <script src="static/js/angular-1.2.3.min.js"></script>
-    <script src="static/js/angular-route-1.2.3.min.js"></script>
-    <script src="static/js/ui-bootstrap-tpls-0.9.0.min.js"></script>
-    <script src="static/js/relative-date.js"></script>
+    <script src="/static/js/jquery-1.7.1.min.js"></script>
+    <script src="/static/js/underscore-1.4.3.min.js"></script>
+    <script src="/static/js/zeroclipboard-1.1.7.js"></script>
+    <script src="/static/js/angular-1.2.3.min.js"></script>
+    <script src="/static/js/angular-route-1.2.3.min.js"></script>
+    <script src="/static/js/ui-bootstrap-tpls-0.9.0.min.js"></script>
+    <script src="/static/js/relative-date.js"></script>
 
-    <script src="static/js/app.js"></script>
-    <script src="static/js/services.js"></script>
-    <script src="static/js/controllers.js"></script>
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/services.js"></script>
+    <script src="/static/js/controllers.js"></script>
   </body>
 </html>
