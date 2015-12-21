@@ -85,20 +85,22 @@ http {
         }
 
         {{with $mesos}}
-        location /mesos {
-            try_file $uri @mesos-upstream;
-            root /usr/share/nginx/html;
-        }
-
-        location @mesos-upstream {
+        location ~ /mesos/((master|metrics|monitor|files)\/.*) {
             proxy_set_header host              $host;
             proxy_set_header x-real-ip         $remote_addr;
             proxy_set_header x-forwarded-for   $proxy_add_x_forwarded_for;
             proxy_set_header x-forwarded-proto $scheme;
 
-            rewrite /mesos/(.+)$ /$1 break;
-            proxy_pass http://mesos;
-        } {{end}}
+            proxy_pass http://mesos/$1$is_args$args;
+        }
+
+        location /mesos {
+            root /usr/share/nginx/html;
+            index index.html index.htm;
+            try_files $uri $uri/ =404;
+        }
+
+        {{end}}
 
         {{range service "follower.mesos"}}
         location ~ /mesos/slave/{{index (.ID | split ":") 2}}/(.*) {
