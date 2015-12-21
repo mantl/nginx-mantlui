@@ -5,21 +5,21 @@
     config(['paginationConfig', '$routeProvider', function(paginationConfig, $routeProvider) {
       $routeProvider
         .when('/',
-          {templateUrl: 'static/home.html', controller: 'HomeCtrl'})
+          {templateUrl: 'home.html', controller: 'HomeCtrl'})
         .when('/frameworks',
-          {templateUrl: 'static/frameworks.html', controller: 'FrameworksCtrl'})
+          {templateUrl: 'frameworks.html', controller: 'FrameworksCtrl'})
         .when('/frameworks/:id',
-          {templateUrl: 'static/framework.html', controller: 'FrameworkCtrl'})
+          {templateUrl: 'framework.html', controller: 'FrameworkCtrl'})
         .when('/offers',
-          {templateUrl: 'static/offers.html', controller: 'OffersCtrl'})
+          {templateUrl: 'offers.html', controller: 'OffersCtrl'})
         .when('/slaves',
-          {templateUrl: 'static/slaves.html', controller: 'SlavesCtrl'})
+          {templateUrl: 'slaves.html', controller: 'SlavesCtrl'})
         .when('/slaves/:slave_id',
-          {templateUrl: 'static/slave.html', controller: 'SlaveCtrl'})
+          {templateUrl: 'slave.html', controller: 'SlaveCtrl'})
         .when('/slaves/:slave_id/frameworks/:framework_id',
-          {templateUrl: 'static/slave_framework.html', controller: 'SlaveFrameworkCtrl'})
+          {templateUrl: 'slave_framework.html', controller: 'SlaveFrameworkCtrl'})
         .when('/slaves/:slave_id/frameworks/:framework_id/executors/:executor_id',
-          {templateUrl: 'static/slave_executor.html', controller: 'SlaveExecutorCtrl'})
+          {templateUrl: 'slave_executor.html', controller: 'SlaveExecutorCtrl'})
 
         // Use a non-falsy template so the controller will still be executed.
         // Since the controller is intended only to redirect, the blank template
@@ -33,7 +33,7 @@
         .when('/slaves/:slave_id/frameworks/:framework_id/executors/:executor_id/browse',
           {template: ' ', controller: 'SlaveExecutorRerouterCtrl'})
         .when('/slaves/:slave_id/browse',
-          {templateUrl: 'static/browse.html', controller: 'BrowseCtrl'})
+          {templateUrl: 'browse.html', controller: 'BrowseCtrl'})
         .otherwise({redirectTo: '/'});
 
       // Configure [Angular UI Pagination][1]:
@@ -46,7 +46,7 @@
       paginationConfig.rotate = false;
 
       ZeroClipboard.setDefaults({
-        moviePath: '/static/obj/zeroclipboard-1.1.7.swf'
+        moviePath: 'obj/zeroclipboard-1.1.7.swf'
       });
     }])
     .filter('truncateMesosID', function() {
@@ -215,14 +215,14 @@
             $rootScope.$broadcast('mTimestamp.toggle');
           };
         },
-        templateUrl: 'static/directives/timestamp.html'
+        templateUrl: 'directives/timestamp.html'
       }
     }])
     .directive('mPagination', function() {
-      return { templateUrl: 'static/directives/pagination.html' }
+      return { templateUrl: 'directives/pagination.html' }
     })
     .directive('mTableHeader', function() {
-      return { templateUrl: 'static/directives/tableHeader.html' }
+      return { templateUrl: 'directives/tableHeader.html' }
     })
     .directive('mTable', ['$compile', '$filter', function($compile, $filter) {
       /* This directive does not have a template. The DOM doesn't like
