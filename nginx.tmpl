@@ -5,7 +5,7 @@ events {
 }
 
 {{$SSL := or (key "config/mantlui/ssl") (or (env "MANTLUI_SSL") "false") | parseBool}}
-{{$AUTH := or (key "config/mantl/auth") (or (env "MANTL_AUTH") "false") | parseBool}}
+{{$AUTH := or (key "config/mantl/auth") (or (env "MANTLUI_AUTH") "false") | parseBool}}
 {{$consulSSL := or (key "config/mantl/consul_ssl") (or (env "CONSUL_SSL") "false") | parseBool}}
 
 http {
