@@ -56,8 +56,8 @@ http {
         listen {{if $SSL}}443 ssl{{else}}80{{end}};
 
         {{if $SSL}}
-        ssl_certificate     {{or (env "CERTFILE") "/etc/mantlui/mantlui.cert"}};
-        ssl_certificate_key	{{or (env "KEYFILE")  "/etc/mantlui/mantlui.key"}};
+        ssl_certificate     {{or (env "CERTFILE") "/etc/nginx/ssl/nginx.cert"}};
+        ssl_certificate_key	{{or (env "KEYFILE")  "/etc/nginx/ssl/nginx.key"}};
 
         ssl on;
         ssl_session_cache	        builtin:1000 shared:SSL:10m;
