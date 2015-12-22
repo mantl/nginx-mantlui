@@ -15,32 +15,32 @@ http {
     sendfile		on;
     keepalive_timeout	65;
 
-    {{$mesos := service "leader.mesos"}}{{with $mesos}}
+    {{$mesos := service "leader.mesos" "any"}}{{with $mesos}}
     upstream mesos { {{range $mesos}}
         server {{.Address}}:{{.Port}};{{end}}
     } {{end}}
 
-    {{$marathon := service "marathon"}}{{with $marathon}}
+    {{$marathon := service "marathon" "any"}}{{with $marathon}}
     upstream marathon { {{range $marathon}}
         server {{.Address}}:{{.Port}};{{end}}
     } {{end}}
 
-    {{$chronos := service "chronos"}}{{with $chronos}}
+    {{$chronos := service "chronos" "any"}}{{with $chronos}}
     upstream chronos { {{range $chronos}}
         server {{.Address}}:{{.Port}};{{end}}
     } {{end}}
 
-    {{$consul := service "consul"}}{{with $consul}}
+    {{$consul := service "consul" "any"}}{{with $consul}}
     upstream consul { {{range $consul}}
         server {{.Address}}:8500;{{end}}
     } {{end}}
 
-    {{$mantlapi := service "mantl-api"}}{{with $mantlapi}}
+    {{$mantlapi := service "mantl-api" "any"}}{{with $mantlapi}}
     upstream mantlapi { {{range $mantlapi}}
         server {{.Address}}:{{.Port}};{{end}}
     } {{end}}
 
-    {{$traefikAdmin := service "traefik-admin"}}{{with $traefikAdmin}}
+    {{$traefikAdmin := service "traefik-admin" "any"}}{{with $traefikAdmin}}
     upstream traefik-admin { {{range $traefikAdmin}}
         server {{.Address}}:{{.Port}};{{end}}
     } {{end}}
@@ -102,7 +102,7 @@ http {
 
         {{end}}
 
-        {{range service "follower.mesos"}}
+        {{range service "agent.mesos" "any"}}
         location ~ /mesos/slave/{{index (.ID | split ":") 2}}/(.*) {
             proxy_set_header        Host $host;
             proxy_set_header        X-Real-IP $remote_addr;
