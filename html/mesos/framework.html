@@ -1,0 +1,135 @@
+<ol class="breadcrumb">
+  <li>
+    <a class="badge badge-type" href="#">Master</a>
+  </li>
+  <li class="active">
+    <span class="badge badge-type">Framework</span>
+    {{framework.id}}
+  </li>
+</ol>
+
+<div class="alert alert-error hide" id="alert">
+  <button class="close" data-dismiss="alert">×</button>
+  <strong>{{alert_message}}</strong>
+</div>
+
+<div class="row" id="framework">
+  <div class="col-md-3">
+    <div class="well">
+      <dl class="inline clearfix">
+        <dt>Name:</dt>
+        <dd>{{framework.name}}</dd>
+        <dt ng-show="framework.webui_url">Web UI:</dt>
+        <dd ng-show="framework.webui_url"><a href="{{framework.webui_url}}">{{framework.webui_url}}</a></dd>
+        <dt>User:</dt>
+        <dd>{{framework.user}}</dd>
+        <dt>Registered:</dt>
+        <dd>
+          <m-timestamp value="{{framework.registered_time * 1000}}"></m-timestamp>
+        </dd>
+        <dt>Re-registered:</dt>
+        <dd ng-show="!framework.reregistered_time">-</dd>
+        <dd ng-show="framework.reregistered_time">
+          <m-timestamp value="{{framework.reregistered_time * 1000}}"></m-timestamp>
+        </dd>
+        <dt>Active tasks:</dt>
+        <dd>{{framework.tasks.length | number}}</dd>
+        <dt>CPUs:</dt>
+        <dd>{{framework.resources.cpus | number}}</dd>
+        <dt>Mem:</dt>
+        <dd>{{framework.resources.mem * (1024 * 1024) | dataSize}}</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="col-md-9">
+    <table m-table table-content="framework.tasks" title="Active Tasks"
+      class="table table-striped table-bordered table-condensed">
+      <thead>
+        <tr>
+          <th data-key="id">ID</th>
+          <th data-key="name">Name</th>
+          <th data-key="state">State</th>
+          <th data-key="start_time">Started</th>
+          <th data-key="host">Host</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="task in $data">
+          <td>
+            <a href="#/slaves/{{task.slave_id}}/frameworks/{{task.framework_id}}/executors/{{task.executor_id}}">
+              {{task.id}}
+            </a>
+          </td>
+          <td>{{task.name}}</td>
+          <td>{{task.state | truncateMesosState}}</td>
+          <td>
+            <m-timestamp value="{{task.start_time}}"></m-timestamp>
+          </td>
+          <td>
+            <span data-ng-show="slaves[task.slave_id]">
+              {{slaves[task.slave_id].hostname}}
+            </span>
+            <span class="text-muted" data-ng-show="!slaves[task.slave_id]">
+              Slave offline
+            </span>
+          </td>
+          <td>
+            <a data-ng-show="slaves[task.slave_id]" href="#/slaves/{{task.slave_id}}/frameworks/{{task.framework_id}}/executors/{{task.executor_id}}/browse">
+              Sandbox
+            </a>
+            <span class="text-muted" data-ng-show="!slaves[task.slave_id]">
+              Slave offline
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table m-table table-content="framework.completed_tasks" title="Completed Tasks"
+      class="table table-striped table-bordered table-condensed">
+      <thead>
+        <tr>
+          <th data-key="id">ID</th>
+          <th data-key="name">Name</th>
+          <th data-key="state">State</th>
+          <th data-key="start_time">Started</th>
+          <th data-key="finish_time">Stopped</th>
+          <th data-key="host">Host</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="task in $data">
+          <td>{{task.id}}</td>
+          <td>{{task.name}}</td>
+          <td>{{task.state | truncateMesosState}}</td>
+          <td>
+            <m-timestamp value="{{task.start_time}}"></m-timestamp>
+          </td>
+          <td>
+            <m-timestamp value="{{task.finish_time}}"></m-timestamp>
+          </td>
+          <td>
+            <a data-ng-show="slaves[task.slave_id]"
+                href="#/slaves/{{task.slave_id}}/frameworks/{{task.framework_id}}/executors/{{task.executor_id}}">
+              {{slaves[task.slave_id].hostname}}
+            </a>
+            <span class="text-muted" data-ng-show="!slaves[task.slave_id]">
+              Slave offline
+            </span>
+          </td>
+          <td>
+            <a data-ng-show="slaves[task.slave_id]" href="#/slaves/{{task.slave_id}}/frameworks/{{task.framework_id}}/executors/{{task.executor_id}}/browse">
+              Sandbox
+            </a>
+            <span class="text-muted" data-ng-show="!slaves[task.slave_id]">
+              Slave offline
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
