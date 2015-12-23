@@ -17,7 +17,7 @@ publish:
     email: $$DOCKER_EMAIL
     repo: ciscocloud/nginx-mantlui
     tag:
-      - $$TAG
+      - "$$TAG"
       - latest
     when:
       event: tag
