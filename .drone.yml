@@ -11,7 +11,6 @@ publish:
     tag: dev
     when:
       branch: master
-publish:
   docker:
     username: $$DOCKER_USERNAME
     password: $$DOCKER_PASSWORD
