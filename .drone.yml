@@ -4,10 +4,8 @@ build:
     - true
 publish:
   docker:
-    username: "$$DOCKER_USERNAME"
-    password: "$$DOCKER_PASSWORD"
-    email: "$$DOCKER_EMAIL"
+    username: $$DOCKER_USERNAME
+    password: $$DOCKER_PASSWORD
+    email: $$DOCKER_EMAIL
     repo: ryane/nginx-mantlui
-    tag: "$$COMMIT"
-    environment:
-      - DOCKER_LAUNCH_DEBUG=true
+    tag: $$COMMIT
