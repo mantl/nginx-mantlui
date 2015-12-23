@@ -7,5 +7,18 @@ publish:
     username: $$DOCKER_USERNAME
     password: $$DOCKER_PASSWORD
     email: $$DOCKER_EMAIL
-    repo: ryane/nginx-mantlui
-    tag: $$COMMIT
+    repo: ciscocloud/nginx-mantlui
+    tag: dev
+    when:
+      branch: master
+publish:
+  docker:
+    username: $$DOCKER_USERNAME
+    password: $$DOCKER_PASSWORD
+    email: $$DOCKER_EMAIL
+    repo: ciscocloud/nginx-mantlui
+    tag:
+      - $$TAG
+      - latest
+    when:
+      event: tag
