@@ -3,9 +3,10 @@
 DOCKER  = docker
 REPO    = ciscocloud
 NAME    = nginx-mantlui
-VERSION = 0.6.2
+VERSION = 0.6.3
 
 build:
+	find . -name ".DS_Store" -depth -exec rm {} \;
 	$(DOCKER) build -t $(NAME) .
 
 tag: build
