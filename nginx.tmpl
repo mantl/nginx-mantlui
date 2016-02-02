@@ -165,7 +165,8 @@ http {
         }
 
         location /traefik {
-            try_files $uri @traefik-upstream;
+            try_files $uri $uri/ @traefik-upstream;
+            index index.html;
             root /usr/share/nginx/html;
         }
 
