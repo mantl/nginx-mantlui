@@ -47,4 +47,81 @@ The nginx configuration just proxies requests to [mantl-api](https://github.com/
 
 ### Traefik (/traefik)
 
-A couple of files in the [Traefik](https://github.com/emilevauge/traefik) UI have been modified so that API requests are routed correctly (`/traefik/api` instead of `/api`).
+The Traefik UI is embedded in the Traefik binary running on edge nodes. We need to override a few files to change the API urls that the Traefik UI depends on. These files are:
+
+* html/traefik/dashboard/index.html
+* html/traefik/dashboard/scripts/app-*.js
+* html/traefik/dashboard/scripts/vendor-*.js
+
+Because Traefik script file names include a content hash, we must rebuild them with our changes. It is important that the script files match the version of Traefik that is running in Mantl.
+
+#### Building Traefik Assets
+
+1. Clone the Traefik repository
+
+    ```shell
+    git clone git@github.com:emilevauge/traefik.git
+    cd traefik
+    ```
+
+2. Checkout the tag of the correct Traefik release. For example:
+
+    ```shell
+    git checkout -b release/412 v1.0.alpha.412
+    ```
+
+3. Update the webui API paths.
+
+    At the time of this writing, the changes look like this:
+
+    ```diff
+    diff --git a/webui/src/app/core/health.resource.js b/webui/src/app/core/health.resource.js
+    index a765462..f50b001 100644
+    --- a/webui/src/app/core/health.resource.js
+    +++ b/webui/src/app/core/health.resource.js
+    @@ -7,7 +7,7 @@
+
+    /** @ngInject */
+    function Health($resource) {
+    -        return $resource('/health');
+    +        return $resource('/traefik/health');
+    }
+
+    })();
+    diff --git a/webui/src/app/core/providers.resource.js b/webui/src/app/core/providers.resource.js
+    index c363fd2..dcf4a60 100644
+    --- a/webui/src/app/core/providers.resource.js
+    +++ b/webui/src/app/core/providers.resource.js
+    @@ -7,7 +7,7 @@
+
+    /** @ngInject */
+    function Providers($resource) {
+    -      return $resource('/api/providers');
+    +      return $resource('/traefik/api/providers');
+    }
+
+    })();
+
+    ```
+
+4. Build the Traefik Docker image
+
+    ```shell
+    make build
+    ```
+
+5. Generate the Web UI
+
+    ```shell
+    make generate-webui
+    ```
+
+6. Copy the script files from `./static` to the nginx-mantlui project. For example:
+
+    ```shell
+    cp static/index.html ../nginx-mantlui/html/traefik/dashboard/
+    cp static/scripts/app-a08ab8d76c.js ../nginx-mantlui/html/traefik/dashboard/scripts
+    cp static/scripts/scripts/vendor-3ce5552a6a.js ../nginx-mantlui/html/traefik/dashboard/scripts
+    ```
+
+    You will have to adjust the file names to use the content hash that is appropriate for the release you are building.
