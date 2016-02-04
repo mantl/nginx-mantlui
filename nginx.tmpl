@@ -150,14 +150,6 @@ http {
             try_files $uri $uri/ =404;
         }
 
-        {{with $mantlapi}}
-        location /api/ {
-            proxy_set_header        host $host;
-            proxy_set_header        x-real-ip $remote_addr;
-            proxy_set_header        x-forwarded-for $proxy_add_x_forwarded_for;
-            proxy_set_header        x-forwarded-proto $scheme;
-            proxy_pass http://mantlapi/;
-        } {{end}}
 
         {{with $traefikAdmin}}
         location = /traefik {
@@ -170,6 +162,14 @@ http {
             root /usr/share/nginx/html;
         }
 
+        location /api/providers {
+            try_files $uri $uri/ @traefik-upstream;
+        }
+
+        location /health {
+            try_files $uri $uri/ @traefik-upstream;
+        }
+
         location @traefik-upstream {
             proxy_set_header host              $host;
             proxy_set_header x-real-ip         $remote_addr;
@@ -180,5 +180,15 @@ http {
             proxy_pass https://traefik-admin;
         }
         {{end}}
+
+
+        {{with $mantlapi}}
+        location /api/ {
+            proxy_set_header        host $host;
+            proxy_set_header        x-real-ip $remote_addr;
+            proxy_set_header        x-forwarded-for $proxy_add_x_forwarded_for;
+            proxy_set_header        x-forwarded-proto $scheme;
+            proxy_pass http://mantlapi/;
+        } {{end}}
     }
 }
