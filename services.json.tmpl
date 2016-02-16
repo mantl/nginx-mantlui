@@ -1,4 +1,5 @@
 [
+    {{with service "kibana" "any"}}{"name": "Kibana", "id": "kibana", "check": "kibana", "path": "/kibana"},{{end}}
     {"name": "Mesos", "id": "mesos", "check": "mesos", "path": "/mesos"},
     {"name": "Marathon", "id": "marathon", "check": "marathon", "path": "/marathon"},
     {"name": "Consul", "id": "consul", "check": "consul", "path": "/consul/"},
