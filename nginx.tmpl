@@ -50,6 +50,11 @@ http {
         server {{.Address}}:{{.Port}};{{end}}
     } {{end}}
 
+    {{$elasticsearch := service "elasticsearch" "any"}}{{with $elasticsearch}}
+    upstream elasticsearch { {{range $elasticsearch}}
+        server {{.Address}}:{{.Port}};{{end}}
+    } {{end}}
+
     {{if $SSL}}
     server {
         listen 80;
@@ -186,13 +191,23 @@ http {
         }
         {{end}}
 
+        {{with $elasticsearch}}
+        location /elasticsearch/ {
+            proxy_set_header        host $host;
+            proxy_set_header        x-real-ip $remote_addr;
+            proxy_set_header        x-forwarded-for $proxy_add_x_forwarded_for;
+            proxy_set_header        x-forwarded-proto $scheme;
+            proxy_pass http://elasticsearch/;
+        } {{end}}
+
         {{with $kibana}}
         location /kibana {
             proxy_set_header host              $host;
             proxy_set_header x-real-ip         $remote_addr;
             proxy_set_header x-forwarded-for   $proxy_add_x_forwarded_for;
             proxy_set_header x-forwarded-proto $scheme;
-            proxy_pass http://kibana;
+            rewrite    /kibana/(.+)$ /$1 break;
+            proxy_pass http://kibana/;
         } {{end}}
     }
 }
