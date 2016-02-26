@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# d3bfbb47a1aac14f0d02bbf48cfa31af1ed9feb3
+# 2036336919c0f11044a82ff1284c371ff6fa2092
 
 NETWORK:
 *
@@ -15,6 +15,10 @@ CACHE:
 ./images/logos/chronos@2x.png
 ./images/logos/consul.png
 ./images/logos/consul@2x.png
+./images/logos/elasticsearch.png
+./images/logos/elasticsearch@2x.png
+./images/logos/kibana.png
+./images/logos/kibana@2x.png
 ./images/logos/marathon.png
 ./images/logos/marathon@2x.png
 ./images/logos/mesos.png
