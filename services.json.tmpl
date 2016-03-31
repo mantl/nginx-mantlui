@@ -3,7 +3,10 @@
     {"name": "Marathon", "id": "marathon", "check": "marathon", "path": "/marathon"},
     {"name": "Consul", "id": "consul", "check": "consul", "path": "/consul/"}{{with service "traefik" "any"}},
     {"name": "Traefik", "id": "traefik", "check": "traefik-admin", "path": "/traefik"}{{end}}{{with service "chronos" "any"}},
-    {"name": "Chronos", "id": "chronos", "check": "chronos", "path": "/chronos"}{{end}}{{with service "kibana" "any"}},
-    {"name": "Kibana", "id": "kibana", "check": "kibana", "path": "/kibana"}{{end}}{{with service "elasticsearch" "any"}},
-    {"name": "Elasticsearch", "id": "elasticsearch", "check": "elasticsearch", "path": "/elasticsearch"}{{end}}
+    {"name": "Chronos", "id": "chronos", "check": "chronos", "path": "/chronos"}{{end}}{{if service "kibana-mantl-task" "any"}},
+    {"name": "Kibana", "id": "kibana-mantl-task", "check": "kibana-mantl", "path": "/kibana"}{{else}}{{if service "kibana-mantl" "any"}},
+    {"name": "Kibana", "id": "kibana-mantl", "check": "kibana-mantl", "path": "/kibana"}{{else}}{{if service "kibana" "any"}},
+    {"name": "Kibana", "id": "kibana", "check": "kibana", "path": "/kibana"}{{end}}{{end}}{{end}}{{if service "elasticsearch-mantl" "any"}},
+    {"name": "Elasticsearch", "id": "elasticsearch-mantl", "check": "elasticsearch-mantl", "path": "/elasticsearch"}{{else}}{{if service "elasticsearch" "any"}},
+    {"name": "Elasticsearch", "id": "elasticsearch", "check": "elasticsearch", "path": "/elasticsearch"}{{end}}{{end}}
 ]

@@ -45,12 +45,12 @@ http {
         server {{.Address}}:{{.Port}};{{end}}
     } {{end}}
 
-    {{$kibana := service "kibana" "any"}}{{with $kibana}}
+    {{$kibana := (or (service "kibana-mantl-task" "any") (service "kibana-mantl" "any") (service "kibana" "any"))}}{{with $kibana}}
     upstream kibana { {{range $kibana}}
         server {{.Address}}:{{.Port}};{{end}}
     } {{end}}
 
-    {{$elasticsearch := service "elasticsearch" "any"}}{{with $elasticsearch}}
+    {{$elasticsearch := (or (service "elasticsearch-mantl" "any") (service "elasticsearch" "any"))}}{{with $elasticsearch}}
     upstream elasticsearch { {{range $elasticsearch}}
         server {{.Address}}:{{.Port}};{{end}}
     } {{end}}
@@ -70,7 +70,7 @@ http {
         ssl_certificate_key	{{or (env "KEYFILE")  "/etc/nginx/ssl/nginx.key"}};
 
         ssl on;
-        ssl_session_cache	        builtin:1000 shared:SSL:10m;
+        ssl_session_cache         builtin:1000 shared:SSL:10m;
         ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
         ssl_ciphers               {{or (key "config/mantlui/ssl_ciphers") "HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4"}};
         ssl_prefer_server_ciphers on;
