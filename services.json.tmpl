@@ -1,6 +1,7 @@
 [
     {"name": "Mesos", "id": "mesos", "check": "mesos", "path": "/mesos"},
     {"name": "Marathon", "id": "marathon", "check": "marathon", "path": "/marathon"},
+    {"name": "Kubernetes", "id": "kubernetes", "check": "kubernetes", "path": "/kubernetes"},
     {"name": "Consul", "id": "consul", "check": "consul", "path": "/consul/"}{{with service "traefik" "any"}},
     {"name": "Traefik", "id": "traefik", "check": "traefik-admin", "path": "/traefik"}{{end}}{{with service "chronos" "any"}},
     {"name": "Chronos", "id": "chronos", "check": "chronos", "path": "/chronos"}{{end}}{{if service "kibana-mantl-task" "any"}},

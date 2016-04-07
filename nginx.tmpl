@@ -25,6 +25,11 @@ http {
         server {{.Address}}:{{.Port}};{{end}}
     } {{end}}
 
+    {{$kubernetes_ui := service "nodeport" "any"}}{{with $kubernetes_ui}}
+    upstream kubernetes_ui { {{range $kubernetes_ui}}
+        server {{.Address}}:30000;{{end}}
+    } {{end}}
+
     {{$chronos := service "chronos" "any"}}{{with $chronos}}
     upstream chronos { {{range $chronos}}
         server {{.Address}}:{{.Port}};{{end}}
@@ -134,6 +139,15 @@ http {
             proxy_set_header        x-forwarded-for $proxy_add_x_forwarded_for;
             proxy_set_header        x-forwarded-proto $scheme;
             proxy_pass http://marathon/;
+        } {{end}}
+
+        {{with $kubernetes_ui}}
+        location /kubernetes/ {
+            proxy_set_header        host $host;
+            proxy_set_header        x-real-ip $remote_addr;
+            proxy_set_header        x-forwarded-for $proxy_add_x_forwarded_for;
+            proxy_set_header        x-forwarded-proto $scheme;
+            proxy_pass http://kubernetes_ui/;
         } {{end}}
 
         {{with $chronos}}
