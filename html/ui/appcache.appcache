@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# d6038747a46f93f0c7c37444490ad34af8f7bd71
+# fd5368381157dd1f09caf405fc1bf3c47fc52153
 
 NETWORK:
 *
@@ -19,6 +19,8 @@ CACHE:
 ./images/logos/elasticsearch@2x.png
 ./images/logos/kibana.png
 ./images/logos/kibana@2x.png
+./images/logos/kubernetes.png
+./images/logos/kubernetes@2x.png
 ./images/logos/marathon.png
 ./images/logos/marathon@2x.png
 ./images/logos/mesos.png
