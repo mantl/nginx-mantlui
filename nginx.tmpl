@@ -60,6 +60,11 @@ http {
         server {{.Address}}:{{.Port}};{{end}}
     } {{end}}
 
+    {{$kafka_api := service "kafka-mantl" "any"}}{{with $kafka_api}}
+    upstream kafka-api { {{range $kafka_api}}
+        server {{.Address}}:{{.Port}};{{end}}
+    } {{end}}
+
     {{if $SSL}}
     server {
         listen 80;
@@ -222,6 +227,15 @@ http {
             proxy_set_header x-forwarded-proto $scheme;
             rewrite    /kibana/(.+)$ /$1 break;
             proxy_pass http://kibana/;
+        } {{end}}
+
+        {{with $kafka_api}}
+        location /kafka/ {
+            proxy_set_header        host $host;
+            proxy_set_header        x-real-ip $remote_addr;
+            proxy_set_header        x-forwarded-for $proxy_add_x_forwarded_for;
+            proxy_set_header        x-forwarded-proto $scheme;
+            proxy_pass http://kafka-api/;
         } {{end}}
     }
 }
