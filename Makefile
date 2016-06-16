@@ -18,7 +18,7 @@ push: tag
 	$(DOCKER) push $(REPO)/$(NAME):$(VERSION)
 
 pushedge: build
-	docker tag  $(REPO)/$(NAME) $(REPO)/$(NAME):edge
+	docker tag  $(NAME) $(REPO)/$(NAME):edge
 	docker push $(REPO)/$(NAME):edge
 
 rmi:
