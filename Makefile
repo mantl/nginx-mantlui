@@ -3,7 +3,7 @@
 DOCKER  = docker
 REPO    = ciscocloud
 NAME    = nginx-mantlui
-VERSION = 0.6.8
+VERSION = 0.7.0
 
 build:
 	find . -name ".DS_Store" -depth -exec rm {} \;
@@ -16,6 +16,10 @@ tag: build
 push: tag
 	$(DOCKER) push $(REPO)/$(NAME):latest
 	$(DOCKER) push $(REPO)/$(NAME):$(VERSION)
+
+pushedge: build
+	docker tag  $(REPO)/$(NAME) $(REPO)/$(NAME):edge
+	docker push $(REPO)/$(NAME):edge
 
 rmi:
 	$(DOCKER) rmi $(NAME) $(REPO)/$(NAME):latest $(REPO)/$(NAME):$(VERSION) || true
