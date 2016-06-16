@@ -67,7 +67,7 @@ Because Traefik script file names include a content hash, we must rebuild them w
 2. Checkout the tag of the correct Traefik release. For example:
 
     ```shell
-    git checkout -b release/412 v1.0.alpha.412
+    git checkout -b r475 v1.0.0-beta.475
     ```
 
 3. Update the webui API paths.
@@ -104,24 +104,25 @@ Because Traefik script file names include a content hash, we must rebuild them w
 
     ```
 
-4. Build the Traefik Docker image
-
-    ```shell
-    make build
-    ```
-
-5. Generate the Web UI
+4. Generate the Web UI
 
     ```shell
     make generate-webui
     ```
 
-6. Copy the script files from `./static` to the nginx-mantlui project. For example:
+5. Copy the script files from `./static` to the nginx-mantlui project. For example:
 
     ```shell
     cp static/index.html ../nginx-mantlui/html/traefik/dashboard/
-    cp static/scripts/app-a08ab8d76c.js ../nginx-mantlui/html/traefik/dashboard/scripts
-    cp static/scripts/scripts/vendor-3ce5552a6a.js ../nginx-mantlui/html/traefik/dashboard/scripts
+    cp static/scripts/app-34497b2210.js ../nginx-mantlui/html/traefik/dashboard/scripts
+    cp static/scripts/vendor-b67094242f.js ../nginx-mantlui/html/traefik/dashboard/scripts
     ```
 
     You will have to adjust the file names to use the content hash that is appropriate for the release you are building.
+
+6. Delete any old script files from traefik scripts directory (if applicable):
+
+    ```shell
+    git rm html/traefik/dashboard/scripts/app-a08ab8d76c.js
+    git rm html/traefik/dashboard/scripts/vendor-3ce5552a6a.js
+    ```
