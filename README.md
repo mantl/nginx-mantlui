@@ -104,13 +104,19 @@ Because Traefik script file names include a content hash, we must rebuild them w
 
     ```
 
-4. Generate the Web UI
+4. Generate Docker image
+
+    ```shell
+    make build
+    ```
+
+5. Generate the Web UI
 
     ```shell
     make generate-webui
     ```
 
-5. Copy the script files from `./static` to the nginx-mantlui project. For example:
+6. Copy the script files from `./static` to the nginx-mantlui project. For example:
 
     ```shell
     cp static/index.html ../nginx-mantlui/html/traefik/dashboard/
@@ -120,7 +126,7 @@ Because Traefik script file names include a content hash, we must rebuild them w
 
     You will have to adjust the file names to use the content hash that is appropriate for the release you are building.
 
-6. Delete any old script files from traefik scripts directory (if applicable):
+7. Delete any old script files from traefik scripts directory (if applicable):
 
     ```shell
     git rm html/traefik/dashboard/scripts/app-a08ab8d76c.js
