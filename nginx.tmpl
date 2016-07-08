@@ -30,6 +30,11 @@ http {
         server {{.Address}}:30000;{{end}}
     } {{end}}
 
+    {{$kubernetes_api := service "kubernetes" "any"}}{{with $mesos}}
+    upstream kubernetes_api { {{range $kubernetes_api}}
+        server {{.Address}}:{{.Port}};{{end}}
+    } {{end}}
+
     {{$chronos := service "chronos" "any"}}{{with $chronos}}
     upstream chronos { {{range $chronos}}
         server {{.Address}}:{{.Port}};{{end}}
@@ -153,6 +158,15 @@ http {
             proxy_set_header        x-forwarded-for $proxy_add_x_forwarded_for;
             proxy_set_header        x-forwarded-proto $scheme;
             proxy_pass http://kubernetes_ui/;
+        } {{end}}
+
+        {{with $kubernetes_api}}
+        location /kubeapi/ {
+            proxy_set_header        host $host;
+            proxy_set_header        x-real-ip $remote_addr;
+            proxy_set_header        x-forwarded-for $proxy_add_x_forwarded_for;
+            proxy_set_header        x-forwarded-proto $scheme;
+            proxy_pass https://kubernetes_api/;
         } {{end}}
 
         {{with $chronos}}
