@@ -1,4 +1,5 @@
 worker_processes	1;
+error_log		/dev/stderr;
 
 events {
     worker_connections	1024;
@@ -14,6 +15,7 @@ http {
 
     sendfile		on;
     keepalive_timeout	65;
+    access_log		/dev/stdout;
 
     {{$mesos := service "leader.mesos" "any"}}{{with $mesos}}
     upstream mesos { {{range $mesos}}
