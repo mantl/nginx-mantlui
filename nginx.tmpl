@@ -32,7 +32,7 @@ http {
         server {{.Address}}:30000;{{end}}
     } {{end}}
 
-    {{$kubernetes_api := service "kubernetes" "any"}}{{with $mesos}}
+    {{$kubernetes_api := service "kubernetes" "any"}}{{with $kubernetes_api}}
     upstream kubernetes_api { {{range $kubernetes_api}}
         server {{.Address}}:{{.Port}};{{end}}
     } {{end}}
